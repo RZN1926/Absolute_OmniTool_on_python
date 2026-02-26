@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOOLBOX — Универсальный арсенал</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Unbounded:wght@300;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root {
+  --bg:#0a0a0f; --surface:#111118; --card:#16161f; --border:#2a2a3a;
+  --accent:#7fff6e; --accent2:#ff6ef7; --accent3:#6ebaff;
+  --text:#e8e8f0; --muted:#6b6b80; --danger:#ff5c5c;
+  --add:#1a3a1a; --add-text:#7fff6e; --remove:#3a1a1a; --remove-text:#ff7070;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Space Mono',monospace;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:999;opacity:.6}
+
+/* HEADER */
+header{padding:28px 50px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:20px;position:sticky;top:0;background:rgba(10,10,15,.95);backdrop-filter:blur(20px);z-index:100;flex-wrap:wrap}
+.logo{font-family:'Unbounded',sans-serif;font-size:24px;font-weight:900;letter-spacing:-1px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
+.logo-sub{font-size:10px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;white-space:nowrap}
+nav{margin-left:auto;display:flex;gap:5px;flex-wrap:wrap}
+nav button{background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 12px;font-family:'Space Mono',monospace;font-size:10px;cursor:pointer;border-radius:4px;transition:all .2s;letter-spacing:1px;text-transform:uppercase;white-space:nowrap}
+nav button:hover,nav button.active{border-color:var(--accent);color:var(--accent);background:rgba(127,255,110,.05)}
+.server-badge{font-size:9px;padding:3px 8px;border-radius:100px;background:rgba(127,255,110,.1);border:1px solid rgba(127,255,110,.2);color:var(--accent);letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:5px}
+.server-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* MAIN */
+main{padding:35px 50px 80px;max-width:1500px;margin:0 auto}
+.section{display:none;animation:fadeIn .3s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.section-title{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:300;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:18px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:0;transition:opacity .3s}
+.card:hover::before{opacity:1}
+.card-title{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;margin-bottom:5px}
+.card-desc{font-size:11px;color:var(--muted);margin-bottom:18px;line-height:1.7}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
+
+/* INPUTS */
+input,textarea,select{background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:12px;padding:9px 13px;border-radius:6px;width:100%;outline:none;transition:border-color .2s}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(127,255,110,.07)}
+select option{background:var(--surface)}
+textarea{resize:vertical;min-height:90px}
+label{display:block;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.input-group{margin-bottom:12px}
+input[type="range"]{padding:0;height:4px;accent-color:var(--accent);cursor:pointer}
+input[type="color"]{width:44px;height:34px;padding:2px;cursor:pointer;border-radius:6px}
+input[type="checkbox"]{width:auto;accent-color:var(--accent)}
+
+/* BUTTONS */
+.btn{background:var(--accent);color:#000;border:none;padding:10px 20px;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-radius:6px;cursor:pointer;transition:all .2s;display:inline-block;white-space:nowrap}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(127,255,110,.25)}
+.btn:active{transform:translateY(0)}
+.btn-outline{background:transparent;border:1px solid var(--accent);color:var(--accent);padding:9px 18px;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-radius:6px;cursor:pointer;transition:all .2s}
+.btn-outline:hover{background:rgba(127,255,110,.1)}
+.btn-pink{background:var(--accent2)}.btn-pink:hover{box-shadow:0 6px 20px rgba(255,110,247,.25)}
+.btn-blue{background:var(--accent3)}.btn-blue:hover{box-shadow:0 6px 20px rgba(110,186,255,.25)}
+.btn-danger{background:var(--danger)}.btn-danger:hover{box-shadow:0 6px 20px rgba(255,92,92,.25)}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+
+/* OUTPUT */
+.output-box{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px;font-size:12px;line-height:1.7;min-height:54px;word-break:break-all;white-space:pre-wrap;position:relative}
+.output-box .copy-btn{position:absolute;top:7px;right:7px;background:var(--border);border:none;color:var(--muted);font-family:'Space Mono',monospace;font-size:9px;padding:3px 8px;border-radius:4px;cursor:pointer;transition:all .2s}
+.output-box .copy-btn:hover{background:var(--accent);color:#000}
+
+/* TABS */
+.tab-nav{display:flex;gap:4px;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:8px;flex-wrap:wrap}
+.tab-btn{background:none;border:none;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;cursor:pointer;padding:3px 0;border-bottom:2px solid transparent;transition:all .2s;letter-spacing:1px;margin-right:12px}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-pane{display:none}.tab-pane.active{display:block;animation:fadeIn .2s ease}
+
+/* STATS */
+.stats-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 16px;text-align:center;flex:1;min-width:70px}
+.stat-val{font-family:'Unbounded',sans-serif;font-size:16px;font-weight:700;color:var(--accent)}
+.stat-lbl{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+
+/* CMD */
+.cmd-block{background:#000;border:1px solid var(--border);border-radius:8px;padding:14px;font-size:11px;color:var(--accent);white-space:pre-wrap;word-break:break-all;position:relative}
+.cmd-block .prompt{color:var(--muted)}
+
+/* TOAST */
+#toast{position:fixed;bottom:28px;right:28px;background:var(--accent);color:#000;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;padding:11px 20px;border-radius:8px;z-index:9999;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);letter-spacing:1px}
+#toast.show{transform:translateY(0);opacity:1}
+
+/* ── DIFF STYLES ── */
+.diff-wrap{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;font-size:12px;font-family:'Space Mono',monospace}
+.diff-side{overflow-x:auto}
+.diff-side-header{background:var(--surface);padding:8px 14px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.diff-line{display:flex;gap:0;min-height:22px}
+.diff-line .ln{min-width:40px;padding:2px 8px;text-align:right;font-size:10px;color:var(--muted);background:rgba(0,0,0,.2);user-select:none;flex-shrink:0}
+.diff-line .lt{padding:2px 10px;flex:1;white-space:pre-wrap;word-break:break-all}
+.diff-line.equal .lt{color:var(--text)}
+.diff-line.add{background:var(--add)}.diff-line.add .lt{color:var(--add-text)}
+.diff-line.add .ln{background:rgba(127,255,110,.08)}
+.diff-line.remove{background:var(--remove)}.diff-line.remove .lt{color:var(--remove-text)}
+.diff-line.remove .ln{background:rgba(255,112,112,.08)}
+.diff-line.empty{opacity:.3}
+.diff-line.empty .lt::before{content:'~';color:var(--muted)}
+.diff-stats{display:flex;gap:12px;font-size:11px;margin-bottom:12px}
+.diff-stats .ds{padding:4px 12px;border-radius:100px;font-family:'Unbounded',sans-serif;font-size:10px}
+.diff-stats .ds.add{background:var(--add);color:var(--add-text)}
+.diff-stats .ds.rem{background:var(--remove);color:var(--remove-text)}
+.diff-stats .ds.eq{background:var(--surface);color:var(--muted);border:1px solid var(--border)}
+
+/* ── MARKDOWN EDITOR ── */
+.md-editor-wrap{display:grid;grid-template-columns:1fr 1fr;gap:0;height:600px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.md-pane{display:flex;flex-direction:column;overflow:hidden}
+.md-pane-header{background:var(--surface);padding:8px 14px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);flex-shrink:0;display:flex;justify-content:space-between;align-items:center}
+.md-pane-header span{display:flex;gap:8px;align-items:center}
+.md-editor-input{flex:1;background:var(--bg);border:none;border-right:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:12px;line-height:1.8;padding:16px;resize:none;outline:none}
+.md-preview{flex:1;overflow-y:auto;padding:20px 24px;line-height:1.8;font-family:-apple-system,system-ui,sans-serif;font-size:14px;background:var(--surface)}
+.md-preview h1,.md-preview h2,.md-preview h3,.md-preview h4{font-family:'Unbounded',sans-serif;color:var(--accent);margin:1.2em 0 .5em;line-height:1.3}
+.md-preview h1{font-size:22px}.md-preview h2{font-size:18px}.md-preview h3{font-size:15px}
+.md-preview p{margin:.6em 0;color:var(--text)}
+.md-preview a{color:var(--accent3);text-decoration:underline}
+.md-preview strong{color:var(--accent2)}
+.md-preview em{color:var(--muted);font-style:italic}
+.md-preview code{background:rgba(0,0,0,.4);padding:2px 6px;border-radius:4px;font-family:'Space Mono',monospace;font-size:12px;color:var(--accent)}
+.md-preview pre{background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:6px;padding:14px;margin:1em 0;overflow-x:auto}
+.md-preview pre code{background:none;padding:0;color:var(--accent);font-size:11px}
+.md-preview ul,.md-preview ol{margin:.5em 0 .5em 1.5em;color:var(--text)}
+.md-preview li{margin:.2em 0}
+.md-preview blockquote{border-left:3px solid var(--accent2);padding:.5em 1em;margin:1em 0;color:var(--muted);background:rgba(255,110,247,.04);border-radius:0 6px 6px 0}
+.md-preview hr{border:none;border-top:1px solid var(--border);margin:1.5em 0}
+.md-preview table{width:100%;border-collapse:collapse;margin:1em 0;font-size:13px}
+.md-preview th{background:rgba(127,255,110,.07);color:var(--accent);padding:8px 12px;text-align:left;border:1px solid var(--border)}
+.md-preview td{padding:7px 12px;border:1px solid var(--border);color:var(--text)}
+.md-preview img{max-width:100%;border-radius:6px;margin:.5em 0}
+.md-preview .task-item{list-style:none;display:flex;align-items:center;gap:8px}
+.md-toolbar{background:var(--surface);border-bottom:1px solid var(--border);padding:6px 10px;display:flex;gap:4px;flex-wrap:wrap;flex-shrink:0}
+.md-tool-btn{background:none;border:1px solid var(--border);color:var(--muted);font-size:11px;padding:3px 9px;border-radius:4px;cursor:pointer;transition:all .15s;font-family:'Space Mono',monospace}
+.md-tool-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(127,255,110,.05)}
+
+/* ── CSS GENERATOR ── */
+.css-preview{border-radius:8px;border:1px solid var(--border);padding:40px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;min-height:120px;transition:all .3s}
+.css-preview-el{width:100px;height:100px;border-radius:8px;background:var(--accent);transition:all .3s;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;color:#000}
+.css-code{background:#000;border:1px solid var(--border);border-radius:6px;padding:14px;font-size:11px;color:var(--accent);white-space:pre-wrap;word-break:break-all;position:relative;font-family:'Space Mono',monospace}
+.css-code .copy-btn{position:absolute;top:7px;right:7px;background:var(--border);border:none;color:var(--muted);font-family:'Space Mono',monospace;font-size:9px;padding:3px 8px;border-radius:4px;cursor:pointer;transition:all .2s}
+.css-code .copy-btn:hover{background:var(--accent);color:#000}
+.range-group{display:flex;align-items:center;gap:10px}
+.range-group input[type=range]{flex:1}
+.range-group span{min-width:45px;text-align:right;font-size:11px;color:var(--accent)}
+
+/* MISC */
+.tag{display:inline-block;background:rgba(127,255,110,.1);color:var(--accent);border:1px solid rgba(127,255,110,.2);border-radius:4px;padding:3px 8px;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-right:5px;margin-bottom:5px}
+.badge{display:inline-block;background:rgba(255,110,247,.1);color:var(--accent2);border:1px solid rgba(255,110,247,.2);border-radius:100px;padding:2px 8px;font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-left:6px;vertical-align:middle}
+.row{display:flex;gap:10px;align-items:flex-end}.row>*{flex:1}.row>.btn,.row>.btn-outline{flex:0 0 auto}
+.strength-bar{display:flex;gap:4px;margin-top:6px}.strength-bar span{flex:1;height:4px;border-radius:100px;background:var(--border);transition:background .3s}
+.strength-bar.s1 span:nth-child(1){background:var(--danger)}
+.strength-bar.s2 span:nth-child(-n+2){background:#ff9f43}
+.strength-bar.s3 span:nth-child(-n+3){background:#ffd32a}
+.strength-bar.s4 span{background:var(--accent)}
+.color-preview{width:100%;height:70px;border-radius:8px;margin-bottom:10px;border:1px solid var(--border);transition:background .2s}
+.unit-result{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}
+.unit-row{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:9px 12px;display:flex;justify-content:space-between;align-items:center}
+.unit-row .u-val{font-family:'Unbounded',sans-serif;font-size:12px;color:var(--accent3)}
+.unit-row .u-lbl{font-size:10px;color:var(--muted);letter-spacing:1px}
+.palette-output{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+.tool-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;cursor:pointer;transition:all .25s;overflow:hidden}
+.tool-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 12px 40px rgba(127,255,110,.1)}
+.tool-card .icon{font-size:26px;margin-bottom:10px;display:block}
+.tool-card .name{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;margin-bottom:3px}
+.tool-card .desc{font-size:10px;color:var(--muted);line-height:1.6}
+/* snippet list */
+.snippet-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;transition:border-color .2s;cursor:pointer}
+.snippet-item:hover{border-color:var(--accent3)}
+.snippet-item .si-title{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700}
+.snippet-item .si-meta{font-size:10px;color:var(--muted);margin-top:2px}
+.snippet-item .si-actions{display:flex;gap:6px;flex-shrink:0}
+.si-btn{background:none;border:1px solid var(--border);color:var(--muted);font-size:10px;padding:3px 9px;border-radius:4px;cursor:pointer;transition:all .15s;font-family:'Space Mono',monospace}
+.si-btn:hover{border-color:var(--accent3);color:var(--accent3)}
+.si-btn.del:hover{border-color:var(--danger);color:var(--danger)}
+#qr-output{display:flex;justify-content:center;padding:20px;background:white;border-radius:8px;min-height:100px;align-items:center;margin-top:14px}
+
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+@media(max-width:768px){header{padding:16px};main{padding:16px}.grid-2,.grid-3{grid-template-columns:1fr}.md-editor-wrap{grid-template-columns:1fr;height:auto}.diff-wrap{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+
+<header>
+  <div><div class="logo">TOOLBOX</div><div class="logo-sub">Универсальный арсенал</div></div>
+  <div id="server-badge" class="server-badge" style="opacity:.4">
+    <span class="dot"></span><span>FastAPI + SQLite</span>
+  </div>
+  <nav>
+    <button class="active" onclick="nav('home',this)">🏠 Главная</button>
+    <button onclick="nav('text',this)">📝 Текст</button>
+    <button onclick="nav('diff',this)">🔀 Diff</button>
+    <button onclick="nav('md',this)">📄 Markdown</button>
+    <button onclick="nav('css',this)">🎨 CSS</button>
+    <button onclick="nav('convert',this)">🔄 Конвертер</button>
+    <button onclick="nav('download',this)">⬇️ Загрузчик</button>
+    <button onclick="nav('encode',this)">🔐 Encode</button>
+    <button onclick="nav('gen',this)">🎲 Генератор</button>
+    <button onclick="nav('color',this)">🎨 Цвет</button>
+    <button onclick="nav('qr',this)">📱 QR</button>
+    <button onclick="nav('units',this)">📏 Единицы</button>
+    <button onclick="nav('snippets',this)">💾 Сниппеты</button>
+  </nav>
+</header>
+
+<main>
+<!-- ═══════════ HOME ═══════════ -->
+<div id="home" class="section active">
+  <div style="padding:50px 0 30px;text-align:center">
+    <h1 style="font-family:'Unbounded',sans-serif;font-size:clamp(36px,7vw,80px);font-weight:900;letter-spacing:-2px;background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px">TOOLBOX</h1>
+    <p style="font-size:12px;color:var(--muted);letter-spacing:1px">Всё нужное — в одном месте. Без регистрации. Без рекламы.</p>
+  </div>
+  <div class="section-title">Инструменты</div>
+  <div class="tools-grid">
+    <div class="tool-card" onclick="navBtn('text')"><span class="icon">📝</span><div class="name">Текст</div><div class="desc">Статистика, регистр, замена, slug</div></div>
+    <div class="tool-card" onclick="navBtn('diff')"><span class="icon">🔀</span><div class="name">Diff</div><div class="desc">Сравнение двух текстов с подсветкой</div></div>
+    <div class="tool-card" onclick="navBtn('md')"><span class="icon">📄</span><div class="name">Markdown</div><div class="desc">Редактор с живым превью</div></div>
+    <div class="tool-card" onclick="navBtn('css')"><span class="icon">🎨</span><div class="name">CSS генератор</div><div class="desc">Gradient, shadow, glassmorphism</div></div>
+    <div class="tool-card" onclick="navBtn('convert')"><span class="icon">🔄</span><div class="name">Конвертер</div><div class="desc">JSON↔CSV, Markdown→HTML</div></div>
+    <div class="tool-card" onclick="navBtn('download')"><span class="icon">⬇️</span><div class="name">Загрузчик</div><div class="desc">Команды для yt-dlp, spotdl</div></div>
+    <div class="tool-card" onclick="navBtn('encode')"><span class="icon">🔐</span><div class="name">Кодировки</div><div class="desc">Base64, URL, SHA хэши</div></div>
+    <div class="tool-card" onclick="navBtn('gen')"><span class="icon">🎲</span><div class="name">Генераторы</div><div class="desc">Пароли, UUID, Lorem Ipsum</div></div>
+    <div class="tool-card" onclick="navBtn('color')"><span class="icon">🌈</span><div class="name">Цвет</div><div class="desc">HEX↔RGB↔HSL, палитры</div></div>
+    <div class="tool-card" onclick="navBtn('qr')"><span class="icon">📱</span><div class="name">QR-код</div><div class="desc">WiFi, Email, SMS, ссылки</div></div>
+    <div class="tool-card" onclick="navBtn('units')"><span class="icon">📏</span><div class="name">Единицы</div><div class="desc">Длина, вес, температура...</div></div>
+    <div class="tool-card" onclick="navBtn('snippets')"><span class="icon">💾</span><div class="name">Сниппеты</div><div class="desc">Сохранение текстов на сервере</div></div>
+  </div>
+</div>
+
+<!-- ═══════════ DIFF ═══════════ -->
+<div id="diff" class="section">
+  <div class="section-title">Сравнение текстов</div>
+  <div class="card">
+    <div class="card-title">Text Diff <span class="badge">SERVER</span></div>
+    <div class="card-desc">Построчное сравнение с подсветкой добавлений и удалений. Алгоритм LCS через бэкенд.</div>
+    <div class="grid-2" style="margin-bottom:12px">
+      <div class="input-group">
+        <label>Текст A (оригинал)</label>
+        <textarea id="diff-a" rows="10" placeholder="Вставь исходный текст..."></textarea>
+      </div>
+      <div class="input-group">
+        <label>Текст B (изменённый)</label>
+        <textarea id="diff-b" rows="10" placeholder="Вставь изменённый текст..."></textarea>
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:0;margin-bottom:16px">
+      <button class="btn" onclick="runDiff()">Сравнить →</button>
+      <button class="btn-outline" onclick="swapDiff()">Поменять местами</button>
+      <button class="btn btn-danger" onclick="clearDiff()">Очистить</button>
+    </div>
+    <div id="diff-stats" class="diff-stats"></div>
+    <div id="diff-result"></div>
+  </div>
+</div>
+
+<!-- ═══════════ MARKDOWN ═══════════ -->
+<div id="md" class="section">
+  <div class="section-title">Markdown редактор</div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div class="md-toolbar">
+      <button class="md-tool-btn" onclick="mdInsert('**','**','жирный')"><b>B</b></button>
+      <button class="md-tool-btn" onclick="mdInsert('*','*','курсив')"><i>I</i></button>
+      <button class="md-tool-btn" onclick="mdInsert('`','`','code')">` `</button>
+      <button class="md-tool-btn" onclick="mdInsert('```\n','\n```','код')">```</button>
+      <button class="md-tool-btn" onclick="mdInsertLine('# ')">H1</button>
+      <button class="md-tool-btn" onclick="mdInsertLine('## ')">H2</button>
+      <button class="md-tool-btn" onclick="mdInsertLine('### ')">H3</button>
+      <button class="md-tool-btn" onclick="mdInsertLine('> ')">Quote</button>
+      <button class="md-tool-btn" onclick="mdInsertLine('- ')">List</button>
+      <button class="md-tool-btn" onclick="mdInsertLine('1. ')">1.</button>
+      <button class="md-tool-btn" onclick="mdInsert('[','](url)','ссылка')">Link</button>
+      <button class="md-tool-btn" onclick="mdInsert('![alt](',')')">Img</button>
+      <button class="md-tool-btn" onclick="mdInsertLine('---')">HR</button>
+      <button class="md-tool-btn" onclick="mdInsertTable()">Table</button>
+      <button class="md-tool-btn" onclick="mdInsertLine('- [ ] ')">Task</button>
+      <span style="flex:1"></span>
+      <button class="md-tool-btn" onclick="downloadMd()">⬇ .md</button>
+      <button class="md-tool-btn" onclick="downloadMdHtml()">⬇ .html</button>
+      <button class="md-tool-btn" onclick="copyMdHtml()">Copy HTML</button>
+    </div>
+    <div class="md-editor-wrap">
+      <div class="md-pane">
+        <div class="md-pane-header">
+          <span>✏️ Редактор</span>
+          <span id="md-stats" style="font-size:9px;color:var(--muted)">0 слов</span>
+        </div>
+        <textarea class="md-editor-input" id="md-input" placeholder="Начни писать Markdown...&#10;&#10;# Заголовок&#10;&#10;**Жирный** и *курсив*&#10;&#10;- Пункт 1&#10;- Пункт 2" oninput="renderMd()"></textarea>
+      </div>
+      <div class="md-pane">
+        <div class="md-pane-header"><span>👁 Превью</span><span id="md-preview-info" style="font-size:9px;color:var(--muted)">live</span></div>
+        <div class="md-preview" id="md-preview"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ CSS GENERATOR ═══════════ -->
+<div id="css" class="section">
+  <div class="section-title">CSS Генератор</div>
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="cssTab(this,'css-gradient')">🌈 Градиент</button>
+    <button class="tab-btn" onclick="cssTab(this,'css-shadow')">🌑 Box Shadow</button>
+    <button class="tab-btn" onclick="cssTab(this,'css-text-shadow')">✏️ Text Shadow</button>
+    <button class="tab-btn" onclick="cssTab(this,'css-border')">⬡ Border Radius</button>
+    <button class="tab-btn" onclick="cssTab(this,'css-glass')">🪟 Glassmorphism</button>
+    <button class="tab-btn" onclick="cssTab(this,'css-neumorphism')">⚪ Neumorphism</button>
+    <button class="tab-btn" onclick="cssTab(this,'css-animation')">⚡ Animation</button>
+    <button class="tab-btn" onclick="cssTab(this,'css-filter')">🔮 Filter</button>
+  </div>
+
+  <!-- Gradient -->
+  <div id="css-gradient" class="tab-pane active">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Настройки градиента</div>
+        <div class="input-group">
+          <label>Тип</label>
+          <select id="grad-type" onchange="updateGradient()">
+            <option>linear</option><option>radial</option><option>conic</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Угол (для linear)</label>
+          <div class="range-group"><input type="range" id="grad-angle" min="0" max="360" value="135" oninput="updateGradient()"><span id="grad-angle-v">135°</span></div>
+        </div>
+        <div id="grad-stops">
+          <div class="grad-stop input-group" data-i="0">
+            <label>Цвет 1 <span style="font-size:9px;color:var(--muted);text-transform:none;letter-spacing:0">позиция: <span class="pos-val">0</span>%</span></label>
+            <div class="row">
+              <input type="color" class="gc" value="#7fff6e" oninput="updateGradient()">
+              <input type="range" class="gp" min="0" max="100" value="0" oninput="updateGradient()">
+            </div>
+          </div>
+          <div class="grad-stop input-group" data-i="1">
+            <label>Цвет 2 <span style="font-size:9px;color:var(--muted);text-transform:none;letter-spacing:0">позиция: <span class="pos-val">100</span>%</span></label>
+            <div class="row">
+              <input type="color" class="gc" value="#ff6ef7" oninput="updateGradient()">
+              <input type="range" class="gp" min="0" max="100" value="100" oninput="updateGradient()">
+            </div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn" onclick="addGradStop()">+ Цвет</button>
+          <button class="btn-outline" onclick="removeGradStop()">− Цвет</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Предпросмотр</div>
+        <div id="grad-preview" style="width:100%;height:160px;border-radius:12px;margin-bottom:14px;border:1px solid var(--border);transition:all .2s"></div>
+        <div class="css-code" id="grad-code"><button class="copy-btn" onclick="copyCss('grad-code')">COPY</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Box Shadow -->
+  <div id="css-shadow" class="tab-pane">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Box Shadow</div>
+        <div class="input-group"><label>Цвет тени</label><input type="color" id="sh-color" value="#000000" oninput="updateShadow()"></div>
+        <div class="input-group"><label>X смещение</label><div class="range-group"><input type="range" id="sh-x" min="-50" max="50" value="5" oninput="updateShadow()"><span id="sh-x-v">5px</span></div></div>
+        <div class="input-group"><label>Y смещение</label><div class="range-group"><input type="range" id="sh-y" min="-50" max="50" value="5" oninput="updateShadow()"><span id="sh-y-v">5px</span></div></div>
+        <div class="input-group"><label>Размытие</label><div class="range-group"><input type="range" id="sh-blur" min="0" max="100" value="20" oninput="updateShadow()"><span id="sh-blur-v">20px</span></div></div>
+        <div class="input-group"><label>Распространение</label><div class="range-group"><input type="range" id="sh-spread" min="-30" max="50" value="0" oninput="updateShadow()"><span id="sh-spread-v">0px</span></div></div>
+        <div class="input-group"><label>Прозрачность</label><div class="range-group"><input type="range" id="sh-alpha" min="0" max="100" value="30" oninput="updateShadow()"><span id="sh-alpha-v">30%</span></div></div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;margin-top:4px">
+          <input type="checkbox" id="sh-inset" onchange="updateShadow()">
+          <label style="text-transform:none;letter-spacing:0;color:var(--text);margin:0">Inset (внутренняя)</label>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Предпросмотр</div>
+        <div style="height:160px;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+          <div id="sh-preview" style="width:100px;height:100px;background:var(--accent);border-radius:8px;transition:all .2s"></div>
+        </div>
+        <div class="css-code" id="sh-code"><button class="copy-btn" onclick="copyCss('sh-code')">COPY</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Text Shadow -->
+  <div id="css-text-shadow" class="tab-pane">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Text Shadow</div>
+        <div class="input-group"><label>Цвет</label><input type="color" id="ts-color" value="#7fff6e" oninput="updateTextShadow()"></div>
+        <div class="input-group"><label>X</label><div class="range-group"><input type="range" id="ts-x" min="-20" max="20" value="2" oninput="updateTextShadow()"><span id="ts-x-v">2px</span></div></div>
+        <div class="input-group"><label>Y</label><div class="range-group"><input type="range" id="ts-y" min="-20" max="20" value="2" oninput="updateTextShadow()"><span id="ts-y-v">2px</span></div></div>
+        <div class="input-group"><label>Размытие</label><div class="range-group"><input type="range" id="ts-blur" min="0" max="40" value="8" oninput="updateTextShadow()"><span id="ts-blur-v">8px</span></div></div>
+        <div class="input-group"><label>Текст для превью</label><input type="text" id="ts-text" value="TOOLBOX" oninput="updateTextShadow()"></div>
+        <div class="input-group"><label>Размер шрифта</label><div class="range-group"><input type="range" id="ts-size" min="16" max="80" value="42" oninput="updateTextShadow()"><span id="ts-size-v">42px</span></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Предпросмотр</div>
+        <div style="height:140px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;background:var(--surface);border-radius:8px;border:1px solid var(--border)">
+          <div id="ts-preview" style="font-family:'Unbounded',sans-serif;font-weight:900;color:#fff;transition:all .2s">TOOLBOX</div>
+        </div>
+        <div class="css-code" id="ts-code"><button class="copy-btn" onclick="copyCss('ts-code')">COPY</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Border Radius -->
+  <div id="css-border" class="tab-pane">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Border Radius</div>
+        <div class="input-group"><label>Тип</label>
+          <select id="br-type" onchange="updateBorderRadius()">
+            <option>single</option><option>individual</option><option>blob</option>
+          </select>
+        </div>
+        <div id="br-single-ctrl">
+          <div class="input-group"><label>Радиус</label><div class="range-group"><input type="range" id="br-all" min="0" max="100" value="16" oninput="updateBorderRadius()"><span id="br-all-v">16px</span></div></div>
+        </div>
+        <div id="br-individual-ctrl" style="display:none">
+          <div class="input-group"><label>Верх-Лево</label><div class="range-group"><input type="range" id="br-tl" min="0" max="100" value="16" oninput="updateBorderRadius()"><span id="br-tl-v">16px</span></div></div>
+          <div class="input-group"><label>Верх-Право</label><div class="range-group"><input type="range" id="br-tr" min="0" max="100" value="16" oninput="updateBorderRadius()"><span id="br-tr-v">16px</span></div></div>
+          <div class="input-group"><label>Низ-Право</label><div class="range-group"><input type="range" id="br-br" min="0" max="100" value="16" oninput="updateBorderRadius()"><span id="br-br-v">16px</span></div></div>
+          <div class="input-group"><label>Низ-Лево</label><div class="range-group"><input type="range" id="br-bl" min="0" max="100" value="16" oninput="updateBorderRadius()"><span id="br-bl-v">16px</span></div></div>
+        </div>
+        <div class="input-group"><label>Цвет элемента</label><input type="color" id="br-color" value="#7fff6e" oninput="updateBorderRadius()"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Предпросмотр</div>
+        <div style="height:160px;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+          <div id="br-preview" style="width:120px;height:120px;background:var(--accent);transition:all .3s"></div>
+        </div>
+        <div class="css-code" id="br-code"><button class="copy-btn" onclick="copyCss('br-code')">COPY</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Glassmorphism -->
+  <div id="css-glass" class="tab-pane">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Glassmorphism</div>
+        <div class="input-group"><label>Прозрачность</label><div class="range-group"><input type="range" id="gl-opacity" min="0" max="40" value="10" oninput="updateGlass()"><span id="gl-opacity-v">10%</span></div></div>
+        <div class="input-group"><label>Blur</label><div class="range-group"><input type="range" id="gl-blur" min="0" max="40" value="10" oninput="updateGlass()"><span id="gl-blur-v">10px</span></div></div>
+        <div class="input-group"><label>Saturation</label><div class="range-group"><input type="range" id="gl-sat" min="100" max="200" value="180" oninput="updateGlass()"><span id="gl-sat-v">180%</span></div></div>
+        <div class="input-group"><label>Толщина border</label><div class="range-group"><input type="range" id="gl-border" min="0" max="3" step="0.5" value="1" oninput="updateGlass()"><span id="gl-border-v">1px</span></div></div>
+        <div class="input-group"><label>Border Radius</label><div class="range-group"><input type="range" id="gl-radius" min="0" max="40" value="16" oninput="updateGlass()"><span id="gl-radius-v">16px</span></div></div>
+        <div class="input-group"><label>Цвет карточки</label><input type="color" id="gl-color" value="#7fff6e" oninput="updateGlass()"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Предпросмотр</div>
+        <div id="gl-bg" style="height:200px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a3a5c,#3a1a5c,#1a3a2c);margin-bottom:14px;position:relative;overflow:hidden">
+          <div style="position:absolute;top:20px;left:20px;width:80px;height:80px;border-radius:50%;background:rgba(127,255,110,.3);filter:blur(20px)"></div>
+          <div style="position:absolute;bottom:20px;right:20px;width:60px;height:60px;border-radius:50%;background:rgba(255,110,247,.3);filter:blur(15px)"></div>
+          <div id="gl-preview" style="width:160px;height:110px;display:flex;align-items:center;justify-content:center;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;color:#fff;transition:all .3s">Glass Card</div>
+        </div>
+        <div class="css-code" id="gl-code"><button class="copy-btn" onclick="copyCss('gl-code')">COPY</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Neumorphism -->
+  <div id="css-neumorphism" class="tab-pane">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Neumorphism</div>
+        <div class="input-group"><label>Цвет фона</label><input type="color" id="nm-bg" value="#e0e5ec" oninput="updateNeum()"></div>
+        <div class="input-group"><label>Размер тени</label><div class="range-group"><input type="range" id="nm-size" min="5" max="40" value="20" oninput="updateNeum()"><span id="nm-size-v">20px</span></div></div>
+        <div class="input-group"><label>Blur</label><div class="range-group"><input type="range" id="nm-blur" min="10" max="60" value="40" oninput="updateNeum()"><span id="nm-blur-v">40px</span></div></div>
+        <div class="input-group"><label>Border Radius</label><div class="range-group"><input type="range" id="nm-radius" min="0" max="50" value="16" oninput="updateNeum()"><span id="nm-radius-v">16px</span></div></div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;margin-top:4px">
+          <input type="checkbox" id="nm-inset" onchange="updateNeum()">
+          <label style="text-transform:none;letter-spacing:0;color:var(--text);margin:0">Вдавленный (inset)</label>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Предпросмотр</div>
+        <div id="nm-bg-wrap" style="height:200px;display:flex;align-items:center;justify-content:center;border-radius:8px;margin-bottom:14px;background:#e0e5ec">
+          <div id="nm-preview" style="width:120px;height:120px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;transition:all .3s">NEURO</div>
+        </div>
+        <div class="css-code" id="nm-code"><button class="copy-btn" onclick="copyCss('nm-code')">COPY</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Animation -->
+  <div id="css-animation" class="tab-pane">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Keyframe Анимации</div>
+        <div class="input-group"><label>Тип анимации</label>
+          <select id="anim-type" onchange="updateAnimation()">
+            <option value="fadeIn">Fade In</option>
+            <option value="slideUp">Slide Up</option>
+            <option value="bounce">Bounce</option>
+            <option value="pulse">Pulse</option>
+            <option value="spin">Spin</option>
+            <option value="shake">Shake</option>
+            <option value="flip">Flip</option>
+            <option value="rubber">Rubber Band</option>
+          </select>
+        </div>
+        <div class="input-group"><label>Длительность</label><div class="range-group"><input type="range" id="anim-dur" min="0.1" max="5" step="0.1" value="1" oninput="updateAnimation()"><span id="anim-dur-v">1s</span></div></div>
+        <div class="input-group"><label>Timing function</label>
+          <select id="anim-timing" onchange="updateAnimation()">
+            <option>ease</option><option>ease-in</option><option>ease-out</option><option>ease-in-out</option><option>linear</option><option>cubic-bezier(0.68,-0.55,0.27,1.55)</option>
+          </select>
+        </div>
+        <div class="input-group"><label>Повторений</label>
+          <select id="anim-iter" onchange="updateAnimation()">
+            <option>1</option><option>2</option><option>3</option><option>infinite</option>
+          </select>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Предпросмотр</div>
+        <div style="height:160px;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+          <div id="anim-preview" style="width:90px;height:90px;background:var(--accent);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;color:#000">CLICK</div>
+        </div>
+        <div class="btn-row" style="margin-bottom:12px;margin-top:0">
+          <button class="btn" onclick="playAnimation()">▶ Запустить</button>
+          <button class="btn-outline" onclick="stopAnimation()">■ Стоп</button>
+        </div>
+        <div class="css-code" id="anim-code"><button class="copy-btn" onclick="copyCss('anim-code')">COPY</button></div>
+      </div>
+    </div>
+    <div id="anim-keyframes-output" style="display:none"></div>
+  </div>
+
+  <!-- Filter -->
+  <div id="css-filter" class="tab-pane">
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">CSS Filters</div>
+        <div class="input-group"><label>Blur</label><div class="range-group"><input type="range" id="fi-blur" min="0" max="20" value="0" oninput="updateFilter()"><span id="fi-blur-v">0px</span></div></div>
+        <div class="input-group"><label>Brightness</label><div class="range-group"><input type="range" id="fi-bright" min="0" max="300" value="100" oninput="updateFilter()"><span id="fi-bright-v">100%</span></div></div>
+        <div class="input-group"><label>Contrast</label><div class="range-group"><input type="range" id="fi-contrast" min="0" max="300" value="100" oninput="updateFilter()"><span id="fi-contrast-v">100%</span></div></div>
+        <div class="input-group"><label>Saturate</label><div class="range-group"><input type="range" id="fi-sat" min="0" max="500" value="100" oninput="updateFilter()"><span id="fi-sat-v">100%</span></div></div>
+        <div class="input-group"><label>Hue Rotate</label><div class="range-group"><input type="range" id="fi-hue" min="0" max="360" value="0" oninput="updateFilter()"><span id="fi-hue-v">0deg</span></div></div>
+        <div class="input-group"><label>Sepia</label><div class="range-group"><input type="range" id="fi-sepia" min="0" max="100" value="0" oninput="updateFilter()"><span id="fi-sepia-v">0%</span></div></div>
+        <div class="input-group"><label>Grayscale</label><div class="range-group"><input type="range" id="fi-gray" min="0" max="100" value="0" oninput="updateFilter()"><span id="fi-gray-v">0%</span></div></div>
+        <div class="input-group"><label>Invert</label><div class="range-group"><input type="range" id="fi-invert" min="0" max="100" value="0" oninput="updateFilter()"><span id="fi-invert-v">0%</span></div></div>
+        <button class="btn-outline" onclick="resetFilters()">Сбросить</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Предпросмотр</div>
+        <div style="height:200px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;background:var(--surface);border-radius:8px;border:1px solid var(--border)">
+          <div id="fi-preview" style="width:140px;height:140px;border-radius:8px;background:linear-gradient(135deg,#7fff6e,#ff6ef7,#6ebaff);transition:filter .2s"></div>
+        </div>
+        <div class="css-code" id="fi-code"><button class="copy-btn" onclick="copyCss('fi-code')">COPY</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ TEXT TOOLS ═══════════ -->
+<div id="text" class="section">
+  <div class="section-title">Текстовые инструменты</div>
+  <div class="card">
+    <div class="card-title">Анализатор текста</div>
+    <textarea id="text-input" rows="5" placeholder="Вставь текст..." oninput="analyzeText()"></textarea>
+    <div class="stats-row" style="margin-top:12px" id="text-stats">
+      <div class="stat-box"><div class="stat-val" id="stat-chars">0</div><div class="stat-lbl">Символов</div></div>
+      <div class="stat-box"><div class="stat-val" id="stat-chars-ns">0</div><div class="stat-lbl">Без пробелов</div></div>
+      <div class="stat-box"><div class="stat-val" id="stat-words">0</div><div class="stat-lbl">Слов</div></div>
+      <div class="stat-box"><div class="stat-val" id="stat-lines">0</div><div class="stat-lbl">Строк</div></div>
+      <div class="stat-box"><div class="stat-val" id="stat-sentences">0</div><div class="stat-lbl">Предложений</div></div>
+      <div class="stat-box"><div class="stat-val" id="stat-read">0</div><div class="stat-lbl">Мин чтения</div></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Изменить регистр</div>
+      <textarea id="case-input" rows="4" placeholder="Текст..."></textarea>
+      <div class="btn-row">
+        <button class="btn" onclick="changeCase('upper')">ВЕРХНИЙ</button>
+        <button class="btn-outline" onclick="changeCase('lower')">нижний</button>
+        <button class="btn-pink" onclick="changeCase('title')">Заглавные</button>
+        <button class="btn-blue" onclick="changeCase('sentence')">Предложения</button>
+      </div>
+      <div class="output-box" style="margin-top:12px" id="case-output"><button class="copy-btn" onclick="copyOut('case-output')">COPY</button><span style="color:var(--muted)">Результат...</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Найти и заменить</div>
+      <textarea id="replace-input" rows="3" placeholder="Текст..."></textarea>
+      <div class="row" style="margin-top:8px">
+        <div class="input-group"><label>Найти</label><input id="replace-find" placeholder="что найти"></div>
+        <div class="input-group"><label>Заменить</label><input id="replace-with" placeholder="на что"></div>
+      </div>
+      <div class="btn-row" style="margin-top:0">
+        <button class="btn" onclick="doReplace(false)">Заменить</button>
+        <button class="btn-outline" onclick="doReplace(true)">RegEx</button>
+      </div>
+      <div class="output-box" style="margin-top:12px" id="replace-output"><button class="copy-btn" onclick="copyOut('replace-output')">COPY</button><span style="color:var(--muted)">Результат...</span></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Утилиты</div>
+      <textarea id="misc-input" rows="3" placeholder="Текст..."></textarea>
+      <div class="btn-row">
+        <button class="btn" onclick="reverseText()">Реверс</button>
+        <button class="btn-outline" onclick="trimText()">Убрать пробелы</button>
+        <button class="btn-pink" onclick="sortLines()">Сорт. строки</button>
+        <button class="btn-blue" onclick="uniqueLines()">Убрать дубли</button>
+      </div>
+      <div class="output-box" style="margin-top:12px" id="misc-output"><button class="copy-btn" onclick="copyOut('misc-output')">COPY</button><span style="color:var(--muted)">Результат...</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Slug & Транслит</div>
+      <input type="text" id="slug-input" placeholder="Привет мир!" oninput="makeSlug()">
+      <div class="output-box" style="margin-top:10px" id="slug-output"><button class="copy-btn" onclick="copyOut('slug-output')">COPY</button><span style="color:var(--muted)">slug...</span></div>
+      <div class="output-box" style="margin-top:8px" id="translit-output"><button class="copy-btn" onclick="copyOut('translit-output')">COPY</button><span style="color:var(--muted)">translit...</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ CONVERT ═══════════ -->
+<div id="convert" class="section">
+  <div class="section-title">Конвертер файлов</div>
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab(this,'tab-json-csv')">JSON↔CSV</button>
+    <button class="tab-btn" onclick="switchTab(this,'tab-md-html')">MD→HTML</button>
+    <button class="tab-btn" onclick="switchTab(this,'tab-json-fmt')">JSON Format</button>
+    <button class="tab-btn" onclick="switchTab(this,'tab-file-upload')">📁 Upload</button>
+  </div>
+  <div id="tab-json-csv" class="tab-pane active">
+    <div class="grid-2">
+      <div class="card"><div class="card-title">JSON → CSV</div><textarea id="json-input" rows="9" placeholder='[{"name":"Иван","age":25}]'></textarea><div class="btn-row"><button class="btn" onclick="jsonToCsv()">→ CSV</button><button class="btn-outline" onclick="dlFile('csv-output','result.csv','text/csv')">Скачать</button></div></div>
+      <div class="card"><div class="card-title">CSV</div><div class="output-box" id="csv-output" style="min-height:200px"><button class="copy-btn" onclick="copyOut('csv-output')">COPY</button><span style="color:var(--muted)">Здесь будет CSV...</span></div></div>
+    </div>
+    <div class="grid-2" style="margin-top:0">
+      <div class="card"><div class="card-title">CSV → JSON</div><textarea id="csv-input" rows="9" placeholder="name,age&#10;Иван,25"></textarea><div class="btn-row"><button class="btn btn-pink" onclick="csvToJson()">→ JSON</button><button class="btn-outline" onclick="dlFile('json-output','result.json','application/json')">Скачать</button></div></div>
+      <div class="card"><div class="card-title">JSON</div><div class="output-box" id="json-output" style="min-height:200px"><button class="copy-btn" onclick="copyOut('json-output')">COPY</button><span style="color:var(--muted)">Здесь будет JSON...</span></div></div>
+    </div>
+  </div>
+  <div id="tab-md-html" class="tab-pane">
+    <div class="grid-2">
+      <div class="card"><div class="card-title">Markdown</div><textarea id="md-conv-input" rows="14" placeholder="# Заголовок&#10;**Жирный**"></textarea><div class="btn-row"><button class="btn" onclick="mdToHtml()">→ HTML</button><button class="btn-outline" onclick="dlFile('html-output','result.html','text/html')">Скачать</button></div></div>
+      <div class="card"><div class="card-title">HTML</div><div class="output-box" id="html-output" style="min-height:320px;font-size:11px"><button class="copy-btn" onclick="copyOut('html-output')">COPY</button><span style="color:var(--muted)">Здесь будет HTML...</span></div></div>
+    </div>
+  </div>
+  <div id="tab-json-fmt" class="tab-pane">
+    <div class="grid-2">
+      <div class="card"><div class="card-title">JSON</div><textarea id="json-fmt-input" rows="12" placeholder='{"name":"test"}'></textarea><div class="btn-row"><button class="btn" onclick="fmtJson(2)">Форматировать</button><button class="btn-outline" onclick="fmtJson(4)">4 пробела</button><button class="btn-pink" onclick="minifyJson()">Минифицировать</button></div></div>
+      <div class="card"><div class="card-title">Результат</div><div class="output-box" id="json-fmt-output" style="min-height:300px;font-size:11px"><button class="copy-btn" onclick="copyOut('json-fmt-output')">COPY</button><span style="color:var(--muted)">Результат...</span></div></div>
+    </div>
+  </div>
+  <div id="tab-file-upload" class="tab-pane">
+    <div class="card">
+      <div class="card-title">Загрузка файла для конвертации <span class="badge">SERVER</span></div>
+      <div class="card-desc">JSON → CSV, CSV → JSON, .md → вернёт содержимое. Файл обрабатывается на сервере.</div>
+      <div class="input-group"><label>Выбери файл (.json, .csv, .md)</label><input type="file" id="file-upload" accept=".json,.csv,.md,.markdown" style="padding:8px"></div>
+      <div class="btn-row"><button class="btn" onclick="uploadFile()">Загрузить и конвертировать</button></div>
+      <div class="output-box" id="file-upload-output" style="margin-top:14px;min-height:200px;font-size:11px"><button class="copy-btn" onclick="copyOut('file-upload-output')">COPY</button><span style="color:var(--muted)">Результат появится здесь...</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ DOWNLOAD ═══════════ -->
+<div id="download" class="section">
+  <div class="section-title">Генератор команд для загрузчиков</div>
+  <div class="card">
+    <div class="card-title">🎬 yt-dlp — YouTube, VK, TikTok, Twitch, Rutube и 1000+ сайтов</div>
+    <div class="input-group"><label>Ссылка</label><input id="dl-url" placeholder="https://youtube.com/watch?v=..." oninput="genDlCmd()"></div>
+    <div class="row">
+      <div class="input-group"><label>Качество</label><select id="dl-quality" onchange="genDlCmd()"><option value="best">Лучшее</option><option value="1080">1080p</option><option value="720">720p</option><option value="480">480p</option><option value="audio">Аудио MP3</option><option value="audio-m4a">Аудио M4A</option></select></div>
+      <div class="input-group"><label>Формат</label><select id="dl-format" onchange="genDlCmd()"><option>mp4</option><option>webm</option><option>mkv</option></select></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:12px"><input type="checkbox" id="dl-playlist" onchange="genDlCmd()"><label style="text-transform:none;letter-spacing:0;color:var(--text);margin:0">Весь плейлист</label></div>
+    <div class="cmd-block" id="dl-cmd"><span class="prompt">$ </span>yt-dlp ...</div>
+    <button class="btn" style="margin-top:10px" onclick="copyCmd('dl-cmd')">Скопировать команду</button>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">🎵 Spotify → spotdl</div>
+      <div class="input-group"><label>Ссылка Spotify</label><input id="spot-url" placeholder="https://open.spotify.com/track/..." oninput="genSpot()"></div>
+      <div class="input-group"><label>Формат</label><select id="spot-fmt" onchange="genSpot()"><option>mp3</option><option>flac</option><option>ogg</option><option>m4a</option></select></div>
+      <div class="cmd-block" id="spot-cmd"><span class="prompt">$ </span>spotdl ...</div>
+      <button class="btn btn-pink" style="margin-top:10px" onclick="copyCmd('spot-cmd')">Скопировать</button>
+    </div>
+    <div class="card">
+      <div class="card-title">🖼️ Изображения → gallery-dl</div>
+      <div class="input-group"><label>Ссылка</label><input id="gal-url" placeholder="https://reddit.com/r/..." oninput="genGal()"></div>
+      <div class="input-group"><label>Папка</label><input id="gal-dir" value="./gallery" oninput="genGal()"></div>
+      <div class="cmd-block" id="gal-cmd"><span class="prompt">$ </span>gallery-dl ...</div>
+      <button class="btn btn-blue" style="margin-top:10px" onclick="copyCmd('gal-cmd')">Скопировать</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ ENCODE ═══════════ -->
+<div id="encode" class="section">
+  <div class="section-title">Кодировки и хэши</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Base64</div>
+      <textarea id="b64-input" rows="4" placeholder="Текст..."></textarea>
+      <div class="btn-row"><button class="btn" onclick="b64enc()">Encode</button><button class="btn-outline" onclick="b64dec()">Decode</button></div>
+      <div class="output-box" style="margin-top:12px" id="b64-output"><button class="copy-btn" onclick="copyOut('b64-output')">COPY</button><span style="color:var(--muted)">Результат...</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">URL Encode</div>
+      <textarea id="url-input" rows="4" placeholder="Привет мир!"></textarea>
+      <div class="btn-row"><button class="btn btn-pink" onclick="urlEnc()">Encode</button><button class="btn-outline" onclick="urlDec()">Decode</button></div>
+      <div class="output-box" style="margin-top:12px" id="url-output"><button class="copy-btn" onclick="copyOut('url-output')">COPY</button><span style="color:var(--muted)">Результат...</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Хэши <span class="badge">SERVER</span></div>
+    <div class="card-desc">SHA-256, SHA-1, SHA-512, MD5 — через Node.js crypto на сервере</div>
+    <textarea id="hash-input" rows="2" placeholder="Текст для хэширования..."></textarea>
+    <div class="btn-row"><button class="btn" onclick="computeHashes()">Вычислить все хэши</button></div>
+    <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+      <div class="output-box" id="hash-md5" style="min-height:36px;font-size:11px"><button class="copy-btn" onclick="copyOut('hash-md5')">COPY</button><span style="color:var(--muted);font-size:10px">MD5: ожидание...</span></div>
+      <div class="output-box" id="hash-sha1" style="min-height:36px;font-size:11px"><button class="copy-btn" onclick="copyOut('hash-sha1')">COPY</button><span style="color:var(--muted);font-size:10px">SHA-1: ожидание...</span></div>
+      <div class="output-box" id="hash-sha256" style="min-height:36px;font-size:11px"><button class="copy-btn" onclick="copyOut('hash-sha256')">COPY</button><span style="color:var(--muted);font-size:10px">SHA-256: ожидание...</span></div>
+      <div class="output-box" id="hash-sha512" style="min-height:36px;font-size:10px"><button class="copy-btn" onclick="copyOut('hash-sha512')">COPY</button><span style="color:var(--muted);font-size:10px">SHA-512: ожидание...</span></div>
+      <div class="output-box" id="hash-sha3" style="min-height:36px;font-size:10px"><button class="copy-btn" onclick="copyOut('hash-sha3')">COPY</button><span style="color:var(--muted);font-size:10px">SHA3-256: ожидание...</span></div>
+      <div class="output-box" id="hash-blake2" style="min-height:36px;font-size:10px"><button class="copy-btn" onclick="copyOut('hash-blake2')">COPY</button><span style="color:var(--muted);font-size:10px">BLAKE2b: ожидание...</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ GENERATORS ═══════════ -->
+<div id="gen" class="section">
+  <div class="section-title">Генераторы</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">🔑 Пароли</div>
+      <div class="input-group"><label>Длина: <span id="pass-len-v">20</span></label><input type="range" id="pass-len" min="4" max="128" value="20" oninput="document.getElementById('pass-len-v').textContent=this.value;genPass()"></div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px;font-size:12px">
+        <label style="display:flex;align-items:center;gap:6px;text-transform:none;letter-spacing:0;color:var(--text)"><input type="checkbox" id="pass-u" checked onchange="genPass()">A-Z</label>
+        <label style="display:flex;align-items:center;gap:6px;text-transform:none;letter-spacing:0;color:var(--text)"><input type="checkbox" id="pass-l" checked onchange="genPass()">a-z</label>
+        <label style="display:flex;align-items:center;gap:6px;text-transform:none;letter-spacing:0;color:var(--text)"><input type="checkbox" id="pass-n" checked onchange="genPass()">0-9</label>
+        <label style="display:flex;align-items:center;gap:6px;text-transform:none;letter-spacing:0;color:var(--text)"><input type="checkbox" id="pass-s" onchange="genPass()">!@#$</label>
+      </div>
+      <div class="output-box" id="pass-output" style="font-size:14px;letter-spacing:2px;font-family:'Unbounded',sans-serif"><button class="copy-btn" onclick="copyOut('pass-output')">COPY</button><span style="color:var(--muted)">...</span></div>
+      <div id="pass-strength" class="strength-bar"><span></span><span></span><span></span><span></span></div>
+      <div class="btn-row"><button class="btn" onclick="genPass()">🎲 Новый</button><button class="btn-outline" onclick="genMultiPass(5)">×5</button></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🆔 UUID</div>
+      <div class="input-group"><label>Количество</label><input type="number" id="uuid-count" value="5" min="1" max="100"></div>
+      <button class="btn" onclick="genUUIDs()">Сгенерировать</button>
+      <div class="output-box" id="uuid-output" style="margin-top:12px;min-height:100px"><button class="copy-btn" onclick="copyOut('uuid-output')">COPY</button><span style="color:var(--muted)">...</span></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">🎲 Случайные числа</div>
+      <div class="row">
+        <div class="input-group"><label>От</label><input type="number" id="rand-from" value="1"></div>
+        <div class="input-group"><label>До</label><input type="number" id="rand-to" value="100"></div>
+        <div class="input-group"><label>Кол-во</label><input type="number" id="rand-count" value="10" min="1" max="1000"></div>
+      </div>
+      <div style="display:flex;gap:14px;font-size:12px;margin-bottom:12px">
+        <label style="display:flex;align-items:center;gap:6px;text-transform:none;letter-spacing:0;color:var(--text)"><input type="checkbox" id="rand-unique">Уникальные</label>
+        <label style="display:flex;align-items:center;gap:6px;text-transform:none;letter-spacing:0;color:var(--text)"><input type="checkbox" id="rand-sort">Сортировать</label>
+      </div>
+      <button class="btn" onclick="genRandom()">Сгенерировать</button>
+      <div class="output-box" id="rand-output" style="margin-top:12px"><button class="copy-btn" onclick="copyOut('rand-output')">COPY</button><span style="color:var(--muted)">...</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📄 Lorem Ipsum</div>
+      <div class="row">
+        <div class="input-group"><label>Кол-во</label><input type="number" id="lorem-count" value="3" min="1" max="50"></div>
+        <div class="input-group"><label>Тип</label><select id="lorem-type"><option value="paragraphs">Параграфов</option><option value="sentences">Предложений</option><option value="words">Слов</option></select></div>
+      </div>
+      <button class="btn btn-pink" onclick="genLorem()">Сгенерировать</button>
+      <div class="output-box" id="lorem-output" style="margin-top:12px;font-size:12px;line-height:1.7"><button class="copy-btn" onclick="copyOut('lorem-output')">COPY</button><span style="color:var(--muted)">...</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ COLOR ═══════════ -->
+<div id="color" class="section">
+  <div class="section-title">Работа с цветом</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">HEX ↔ RGB ↔ HSL</div>
+      <div id="color-preview" class="color-preview" style="background:#7fff6e"></div>
+      <div class="input-group"><label>HEX</label><div class="row"><input type="text" id="col-hex" value="#7fff6e" oninput="hexToAll()"><input type="color" id="col-picker" value="#7fff6e" oninput="pickerToAll()"></div></div>
+      <div class="row"><div class="input-group"><label>R</label><input type="number" id="col-r" min="0" max="255" value="127" oninput="rgbToAll()"></div><div class="input-group"><label>G</label><input type="number" id="col-g" min="0" max="255" value="255" oninput="rgbToAll()"></div><div class="input-group"><label>B</label><input type="number" id="col-b" min="0" max="255" value="110" oninput="rgbToAll()"></div></div>
+      <div class="row"><div class="input-group"><label>H°</label><input type="number" id="col-h" min="0" max="360" oninput="hslToAll()"></div><div class="input-group"><label>S%</label><input type="number" id="col-s" min="0" max="100" oninput="hslToAll()"></div><div class="input-group"><label>L%</label><input type="number" id="col-l" min="0" max="100" oninput="hslToAll()"></div></div>
+      <div class="output-box" id="col-css" style="margin-top:8px;font-size:11px"><button class="copy-btn" onclick="copyOut('col-css')">COPY</button><span style="color:var(--muted)">...</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🎨 Палитра</div>
+      <div class="input-group"><label>Базовый цвет</label><div class="row"><input type="text" id="pal-hex" value="#7fff6e" oninput="genPalette()"><input type="color" id="pal-picker" value="#7fff6e" oninput="document.getElementById('pal-hex').value=this.value;genPalette()"></div></div>
+      <div class="input-group"><label>Тип</label><select id="pal-type" onchange="genPalette()"><option value="complementary">Комплементарная</option><option value="triadic">Триадная</option><option value="tetradic">Тетрадная</option><option value="analogous">Аналогичная</option><option value="monochromatic">Монохромная</option></select></div>
+      <div id="palette-output" class="palette-output"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ QR ═══════════ -->
+<div id="qr" class="section">
+  <div class="section-title">QR-код</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Генератор</div>
+      <textarea id="qr-input" rows="3" placeholder="https://example.com..."></textarea>
+      <div class="row" style="margin-top:8px">
+        <div class="input-group"><label>Размер</label><select id="qr-size"><option value="128">128</option><option value="200" selected>200</option><option value="300">300</option><option value="400">400</option></select></div>
+        <div class="input-group"><label>ECC</label><select id="qr-ecc"><option value="L">L</option><option value="M" selected>M</option><option value="Q">Q</option><option value="H">H</option></select></div>
+      </div>
+      <div class="btn-row"><button class="btn" onclick="genQR()">Создать QR</button><button class="btn-outline" onclick="dlQR()">Скачать PNG</button></div>
+      <div class="card" style="margin-top:14px;padding:16px">
+        <div class="card-title" style="font-size:11px;margin-bottom:10px">Шаблоны</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+          <div class="input-group" style="flex:1;min-width:100px"><label>WiFi SSID</label><input id="wifi-ssid" placeholder="Сеть"></div>
+          <div class="input-group" style="flex:1;min-width:100px"><label>WiFi Pass</label><input type="password" id="wifi-pass" placeholder="Пароль"></div>
+        </div>
+        <button class="btn" onclick="genWifi()">WiFi QR</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin:10px 0">
+          <div class="input-group" style="flex:1"><label>Телефон</label><input id="qr-phone" placeholder="+7..."></div>
+        </div>
+        <div class="btn-row"><button class="btn btn-pink" onclick="genPhoneQR()">Звонок</button><button class="btn-blue" onclick="genSmsQR()">SMS</button></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Предпросмотр</div>
+      <div id="qr-output"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ UNITS ═══════════ -->
+<div id="units" class="section">
+  <div class="section-title">Конвертер единиц</div>
+  <div class="card">
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab(this,'u-length')">📏 Длина</button>
+      <button class="tab-btn" onclick="switchTab(this,'u-weight')">⚖️ Вес</button>
+      <button class="tab-btn" onclick="switchTab(this,'u-temp')">🌡️ Темп</button>
+      <button class="tab-btn" onclick="switchTab(this,'u-speed')">💨 Скорость</button>
+      <button class="tab-btn" onclick="switchTab(this,'u-area')">⬛ Площадь</button>
+      <button class="tab-btn" onclick="switchTab(this,'u-data')">💾 Данные</button>
+    </div>
+    <div id="u-length" class="tab-pane active"><div class="input-group"><label>Метры</label><input type="number" id="len-m" value="1" oninput="convLen(this.value)"></div><div id="len-r" class="unit-result"></div></div>
+    <div id="u-weight" class="tab-pane"><div class="input-group"><label>Кг</label><input type="number" id="wei-kg" value="1" oninput="convWei(this.value)"></div><div id="wei-r" class="unit-result"></div></div>
+    <div id="u-temp" class="tab-pane"><div class="row"><div class="input-group"><label>°C</label><input type="number" id="tc" value="100" oninput="convTemp(this.value,'c')"></div><div class="input-group"><label>°F</label><input type="number" id="tf" value="212" oninput="convTemp(this.value,'f')"></div><div class="input-group"><label>K</label><input type="number" id="tk" value="373.15" oninput="convTemp(this.value,'k')"></div></div></div>
+    <div id="u-speed" class="tab-pane"><div class="input-group"><label>км/ч</label><input type="number" id="spd-kph" value="100" oninput="convSpd(this.value)"></div><div id="spd-r" class="unit-result"></div></div>
+    <div id="u-area" class="tab-pane"><div class="input-group"><label>м²</label><input type="number" id="area-m2" value="100" oninput="convArea(this.value)"></div><div id="area-r" class="unit-result"></div></div>
+    <div id="u-data" class="tab-pane"><div class="input-group"><label>Байты</label><input type="number" id="data-b" value="1073741824" oninput="convData(this.value)"></div><div id="data-r" class="unit-result"></div></div>
+  </div>
+</div>
+
+<!-- ═══════════ SNIPPETS ═══════════ -->
+<div id="snippets" class="section">
+  <div class="section-title">Сниппеты <span class="badge">SERVER</span></div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Новый сниппет</div>
+      <div class="card-desc">Сохраняется на сервере через REST API. Доступно пока сервер запущен.</div>
+      <div class="input-group"><label>Заголовок</label><input id="snip-title" placeholder="Мой сниппет"></div>
+      <div class="input-group"><label>Язык</label><select id="snip-lang"><option>text</option><option>javascript</option><option>python</option><option>html</option><option>css</option><option>json</option><option>sql</option><option>bash</option><option>markdown</option></select></div>
+      <div class="input-group"><label>Содержимое</label><textarea id="snip-content" rows="8" placeholder="Вставь код или текст..."></textarea></div>
+      <div class="btn-row">
+        <button class="btn" onclick="saveSnippet()">💾 Сохранить</button>
+        <button class="btn-outline" onclick="loadSnippets()">🔄 Обновить список</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Сохранённые сниппеты</div>
+      <div id="snippets-list"><div style="color:var(--muted);font-size:12px">Загрузка...</div></div>
+    </div>
+  </div>
+  <div class="card" id="snip-view" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div class="card-title" id="snip-view-title">Сниппет</div>
+      <button class="btn-outline" onclick="closeSnipView()">✕ Закрыть</button>
+    </div>
+    <div class="output-box" id="snip-view-content" style="min-height:200px;font-size:12px"><button class="copy-btn" onclick="copyOut('snip-view-content')">COPY</button></div>
+  </div>
+</div>
+
+</main>
+
+<style id="anim-keyframes"></style>
+
+<script>
+// ════════════════════════════ CORE UTILS ══════════════════════════════
+
+const API = ''; // same origin
+
+function nav(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+function navBtn(id) {
+  const btns = document.querySelectorAll('nav button');
+  const sections = ['home','text','diff','md','css','convert','download','encode','gen','color','qr','units','snippets'];
+  const idx = sections.indexOf(id);
+  if (idx >= 0) nav(id, btns[idx]);
+}
+function switchTab(btn, paneId) {
+  btn.closest('.tab-nav').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // find pane container (parent section or card)
+  let parent = btn.closest('.card') || btn.closest('.section');
+  parent.querySelectorAll(':scope > .tab-pane').forEach(p => p.classList.remove('active'));
+  const pane = document.getElementById(paneId);
+  if (pane) pane.classList.add('active');
+  if (paneId==='u-length') convLen(document.getElementById('len-m').value);
+  if (paneId==='u-weight') convWei(document.getElementById('wei-kg').value);
+  if (paneId==='u-speed') convSpd(document.getElementById('spd-kph').value);
+  if (paneId==='u-area') convArea(document.getElementById('area-m2').value);
+  if (paneId==='u-data') convData(document.getElementById('data-b').value);
+}
+function cssTab(btn, paneId) {
+  btn.closest('.tab-nav').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  btn.closest('main').querySelectorAll('#css > .tab-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById(paneId).classList.add('active');
+}
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+function setOut(id, text) {
+  const el = document.getElementById(id);
+  let btn = el.querySelector('.copy-btn');
+  if (!btn) { btn = document.createElement('button'); btn.className='copy-btn'; btn.onclick=()=>copyOut(id); el.appendChild(btn); }
+  btn.textContent = 'COPY';
+  el._rawText = text;
+  const span = document.createElement('span');
+  span.style.color = 'var(--accent)';
+  span.textContent = text;
+  el.innerHTML = '';
+  el.appendChild(btn);
+  el.appendChild(span);
+}
+function copyOut(id) {
+  const el = document.getElementById(id);
+  const text = el._rawText || el.innerText.replace('COPY','').trim();
+  navigator.clipboard.writeText(text).then(() => toast('Скопировано!'));
+}
+function dlFile(outId, name, mime) {
+  const el = document.getElementById(outId);
+  const text = el._rawText || el.innerText.replace('COPY','').trim();
+  const a = Object.assign(document.createElement('a'), {
+    href: URL.createObjectURL(new Blob([text], {type:mime})), download: name
+  });
+  a.click();
+}
+function copyCmd(id) {
+  const text = document.getElementById(id).textContent.replace(/^\$\s*/,'').trim();
+  navigator.clipboard.writeText(text).then(() => toast('Команда скопирована!'));
+}
+
+async function apiFetch(path, options) {
+  try {
+    const r = await fetch(API + path, options);
+    return await r.json();
+  } catch (e) {
+    return { error: 'Нет связи с сервером. Убедись что бэкенд запущен (npm start)' };
+  }
+}
+
+// Check server health
+async function checkHealth() {
+  const d = await apiFetch('/api/health');
+  const badge = document.getElementById('server-badge');
+  if (d && d.status === 'ok') { badge.style.opacity='1'; badge.title='Uptime: '+Math.round(d.uptime)+'s'; }
+  else badge.style.opacity='.3';
+}
+setInterval(checkHealth, 5000);
+checkHealth();
+
+// ════════════════════════════ DIFF ══════════════════════════════
+
+async function runDiff() {
+  const a = document.getElementById('diff-a').value;
+  const b = document.getElementById('diff-b').value;
+  if (!a && !b) { toast('Введи текст!'); return; }
+  const data = await apiFetch('/api/diff', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({textA:a, textB:b})
+  });
+  if (data.error) { renderClientDiff(a, b); return; }
+  renderDiff(data.diff, data.stats);
+}
+
+// Client-side fallback
+function renderClientDiff(a, b) {
+  const lA = a.split('\n'), lB = b.split('\n');
+  const diff = [];
+  const m=lA.length, n=lB.length;
+  const dp=Array.from({length:m+1},()=>new Int32Array(n+1));
+  for(let i=1;i<=m;i++) for(let j=1;j<=n;j++) dp[i][j]=lA[i-1]===lB[j-1]?dp[i-1][j-1]+1:Math.max(dp[i-1][j],dp[i][j-1]);
+  const lcs=[];let i=m,j=n;
+  while(i>0&&j>0){if(lA[i-1]===lB[j-1]){lcs.unshift([i-1,j-1]);i--;j--;}else if(dp[i-1][j]>dp[i][j-1])i--;else j--;}
+  let ai=0,bi=0,li=0;
+  while(li<lcs.length){const[la,lb]=lcs[li];while(ai<la)diff.push({type:'remove',lineA:ai+1,lineB:null,text:lA[ai++]});while(bi<lb)diff.push({type:'add',lineA:null,lineB:bi+1,text:lB[bi++]});diff.push({type:'equal',lineA:ai+1,lineB:bi+1,text:lA[ai]});ai++;bi++;li++;}
+  while(ai<lA.length)diff.push({type:'remove',lineA:ai+1,lineB:null,text:lA[ai++]});
+  while(bi<lB.length)diff.push({type:'add',lineA:null,lineB:bi+1,text:lB[bi++]});
+  const stats={added:diff.filter(d=>d.type==='add').length,removed:diff.filter(d=>d.type==='remove').length,equal:diff.filter(d=>d.type==='equal').length};
+  renderDiff(diff, stats);
+}
+
+function renderDiff(diff, stats) {
+  document.getElementById('diff-stats').innerHTML =
+    `<div class="ds add">+${stats.added} добавлено</div>
+     <div class="ds rem">−${stats.removed} удалено</div>
+     <div class="ds eq">= ${stats.equal} совпадений</div>`;
+
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  // Build two columns: left = A (equal+remove), right = B (equal+add)
+  const leftLines = [], rightLines = [];
+  for (const d of diff) {
+    if (d.type === 'equal') {
+      leftLines.push({type:'equal', ln:d.lineA, text:d.text});
+      rightLines.push({type:'equal', ln:d.lineB, text:d.text});
+    } else if (d.type === 'remove') {
+      leftLines.push({type:'remove', ln:d.lineA, text:d.text});
+      rightLines.push({type:'empty', ln:null, text:''});
+    } else {
+      leftLines.push({type:'empty', ln:null, text:''});
+      rightLines.push({type:'add', ln:d.lineB, text:d.text});
+    }
+  }
+
+  const mkLine = (l) => {
+    if (l.type === 'empty') return `<div class="diff-line empty"><span class="ln"></span><span class="lt"></span></div>`;
+    return `<div class="diff-line ${l.type}"><span class="ln">${l.ln??''}</span><span class="lt">${esc(l.text)}</span></div>`;
+  };
+
+  document.getElementById('diff-result').innerHTML = `
+    <div class="diff-wrap">
+      <div class="diff-side">
+        <div class="diff-side-header"><span>Текст A (оригинал)</span><span style="color:var(--remove-text)">${diff.filter(d=>d.type==='remove').length} удалений</span></div>
+        ${leftLines.map(mkLine).join('')}
+      </div>
+      <div class="diff-side" style="border-left:1px solid var(--border)">
+        <div class="diff-side-header"><span>Текст B (изменённый)</span><span style="color:var(--add-text)">${diff.filter(d=>d.type==='add').length} добавлений</span></div>
+        ${rightLines.map(mkLine).join('')}
+      </div>
+    </div>`;
+}
+
+function swapDiff() {
+  const a = document.getElementById('diff-a').value;
+  const b = document.getElementById('diff-b').value;
+  document.getElementById('diff-a').value = b;
+  document.getElementById('diff-b').value = a;
+  runDiff();
+}
+function clearDiff() {
+  document.getElementById('diff-a').value = '';
+  document.getElementById('diff-b').value = '';
+  document.getElementById('diff-result').innerHTML = '';
+  document.getElementById('diff-stats').innerHTML = '';
+}
+
+// ════════════════════════════ MARKDOWN EDITOR ══════════════════════════════
+
+const MD_SAMPLE = `# Привет, TOOLBOX! 👋
+
+Это **Markdown редактор** с живым превью.
+
+## Возможности
+
+- **Жирный** и *курсивный* текст
+- \`Inline код\` и блоки кода
+- [Ссылки](https://example.com)
+- Таблицы, цитаты, задачи
+
+## Пример кода
+
+\`\`\`javascript
+const greet = (name) => \`Hello, \${name}!\`;
+console.log(greet('World'));
+\`\`\`
+
+## Таблица
+
+| Инструмент | Описание |
+|---|---|
+| Diff | Сравнение текстов |
+| Markdown | Этот редактор |
+| CSS Gen | Генератор стилей |
+
+> Это цитата. Очень важная.
+
+---
+
+- [x] Сделать TOOLBOX
+- [x] Добавить Markdown
+- [ ] Покорить мир
+
+`;
+
+function renderMd() {
+  const src = document.getElementById('md-input').value;
+  document.getElementById('md-preview').innerHTML = parseMarkdown(src);
+  const words = src.trim() ? src.trim().split(/\s+/).length : 0;
+  document.getElementById('md-stats').textContent = `${words} сл · ${src.length} симв`;
+}
+
+function parseMarkdown(md) {
+  if (!md) return '<p style="color:var(--muted)">Начни печатать...</p>';
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  
+  // code blocks
+  const codeBlocks = [];
+  md = md.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) => {
+    const idx = codeBlocks.length;
+    codeBlocks.push(`<pre><code class="lang-${lang}">${esc(code.trim())}</code></pre>`);
+    return `%%CODE${idx}%%`;
+  });
+  
+  const lines = md.split('\n');
+  let html = '', i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    // Headings
+    const hm = line.match(/^(#{1,6})\s+(.+)/);
+    if (hm) { html += `<h${hm[1].length}>${inlineMd(hm[2])}</h${hm[1].length}>`; i++; continue; }
+    // HR
+    if (/^---+$/.test(line.trim())) { html += '<hr>'; i++; continue; }
+    // Blockquote
+    if (line.startsWith('> ')) { html += `<blockquote>${inlineMd(line.slice(2))}</blockquote>`; i++; continue; }
+    // Tables
+    if (line.includes('|') && lines[i+1] && lines[i+1].match(/^\|?[-|: ]+\|?$/)) {
+      const headers = line.split('|').filter((_,j,a)=>j>0&&j<a.length-1||!line.startsWith('|')).map(h=>h.trim()).filter(Boolean);
+      i+=2;
+      let table = `<table><thead><tr>${headers.map(h=>`<th>${inlineMd(h)}</th>`).join('')}</tr></thead><tbody>`;
+      while (i < lines.length && lines[i].includes('|')) {
+        const cells = lines[i].split('|').slice(1,-1).map(c=>c.trim());
+        table += `<tr>${cells.map(c=>`<td>${inlineMd(c)}</td>`).join('')}</tr>`;
+        i++;
+      }
+      html += table + '</tbody></table>'; continue;
+    }
+    // Task list
+    if (/^- \[(x| )\] /.test(line)) {
+      const checked = line[3]==='x';
+      html += `<ul><li class="task-item"><input type="checkbox" ${checked?'checked':''} disabled> ${inlineMd(line.slice(6))}</li></ul>`;
+      i++; continue;
+    }
+    // Unordered list
+    if (/^[-*+] /.test(line)) {
+      html += '<ul>';
+      while (i < lines.length && /^[-*+] /.test(lines[i])) { html += `<li>${inlineMd(lines[i].slice(2))}</li>`; i++; }
+      html += '</ul>'; continue;
+    }
+    // Ordered list
+    if (/^\d+\. /.test(line)) {
+      html += '<ol>';
+      while (i < lines.length && /^\d+\. /.test(lines[i])) { html += `<li>${inlineMd(lines[i].replace(/^\d+\. /,''))}</li>`; i++; }
+      html += '</ol>'; continue;
+    }
+    // Empty line
+    if (!line.trim()) { i++; continue; }
+    // Paragraph
+    html += `<p>${inlineMd(line)}</p>`; i++;
+  }
+  
+  // restore code blocks
+  codeBlocks.forEach((cb, idx) => { html = html.replace(`%%CODE${idx}%%`, cb); });
+  
+  return html;
+}
+
+function inlineMd(text) {
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`(.+?)`/g, (_, c) => `<code>${esc(c)}</code>`)
+    .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+    .replace(/~~(.+?)~~/g, '<del>$1</del>');
+}
+
+function mdInsert(before, after, placeholder) {
+  const ta = document.getElementById('md-input');
+  const s = ta.selectionStart, e = ta.selectionEnd;
+  const selected = ta.value.slice(s, e) || placeholder;
+  const replacement = before + selected + after;
+  ta.value = ta.value.slice(0, s) + replacement + ta.value.slice(e);
+  ta.focus();
+  ta.selectionStart = s + before.length;
+  ta.selectionEnd = s + before.length + selected.length;
+  renderMd();
+}
+function mdInsertLine(prefix) {
+  const ta = document.getElementById('md-input');
+  const s = ta.selectionStart;
+  const lineStart = ta.value.lastIndexOf('\n', s-1)+1;
+  ta.value = ta.value.slice(0, lineStart) + prefix + ta.value.slice(lineStart);
+  ta.focus();
+  renderMd();
+}
+function mdInsertTable() {
+  mdInsert('', '', '| Заголовок 1 | Заголовок 2 | Заголовок 3 |\n|---|---|---|\n| Ячейка 1 | Ячейка 2 | Ячейка 3 |');
+}
+function downloadMd() {
+  const text = document.getElementById('md-input').value;
+  const a = Object.assign(document.createElement('a'), {
+    href: URL.createObjectURL(new Blob([text], {type:'text/markdown'})),
+    download: 'document.md'
+  }); a.click();
+}
+function downloadMdHtml() {
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{max-width:800px;margin:40px auto;font-family:system-ui;line-height:1.6;padding:20px}pre{background:#f5f5f5;padding:14px;border-radius:4px}</style></head><body>${document.getElementById('md-preview').innerHTML}</body></html>`;
+  const a = Object.assign(document.createElement('a'), {
+    href: URL.createObjectURL(new Blob([html], {type:'text/html'})),
+    download: 'document.html'
+  }); a.click();
+}
+function copyMdHtml() {
+  navigator.clipboard.writeText(document.getElementById('md-preview').innerHTML).then(()=>toast('HTML скопирован!'));
+}
+
+// ════════════════════════════ CSS GENERATORS ══════════════════════════════
+
+// Gradient
+function updateGradient() {
+  const type = document.getElementById('grad-type').value;
+  const angle = document.getElementById('grad-angle').value;
+  document.getElementById('grad-angle-v').textContent = angle + '°';
+  const stops = [];
+  document.querySelectorAll('.grad-stop').forEach((el, i) => {
+    const color = el.querySelector('.gc').value;
+    const pos = el.querySelector('.gp').value;
+    el.querySelector('.pos-val').textContent = pos;
+    stops.push(`${color} ${pos}%`);
+  });
+  let grad;
+  if (type==='linear') grad = `linear-gradient(${angle}deg, ${stops.join(', ')})`;
+  else if (type==='radial') grad = `radial-gradient(circle, ${stops.join(', ')})`;
+  else grad = `conic-gradient(from ${angle}deg, ${stops.join(', ')})`;
+  document.getElementById('grad-preview').style.background = grad;
+  const css = `background: ${grad};`;
+  const el = document.getElementById('grad-code');
+  el._rawText = css;
+  el.innerHTML = `<button class="copy-btn" onclick="copyCss('grad-code')">COPY</button>${css}`;
+}
+function addGradStop() {
+  const c = document.getElementById('grad-stops').querySelectorAll('.grad-stop').length + 1;
+  const d = document.createElement('div');
+  d.className = 'grad-stop input-group';
+  d.innerHTML = `<label>Цвет ${c} <span style="font-size:9px;color:var(--muted);text-transform:none;letter-spacing:0">позиция: <span class="pos-val">50</span>%</span></label><div class="row"><input type="color" class="gc" value="#6ebaff" oninput="updateGradient()"><input type="range" class="gp" min="0" max="100" value="50" oninput="updateGradient()"></div>`;
+  document.getElementById('grad-stops').appendChild(d);
+  updateGradient();
+}
+function removeGradStop() {
+  const stops = document.getElementById('grad-stops').querySelectorAll('.grad-stop');
+  if (stops.length > 2) stops[stops.length-1].remove();
+  updateGradient();
+}
+
+// Shadow
+function updateShadow() {
+  const x = document.getElementById('sh-x').value;
+  const y = document.getElementById('sh-y').value;
+  const blur = document.getElementById('sh-blur').value;
+  const spread = document.getElementById('sh-spread').value;
+  const alpha = document.getElementById('sh-alpha').value;
+  const color = document.getElementById('sh-color').value;
+  const inset = document.getElementById('sh-inset').checked;
+  document.getElementById('sh-x-v').textContent = x+'px';
+  document.getElementById('sh-y-v').textContent = y+'px';
+  document.getElementById('sh-blur-v').textContent = blur+'px';
+  document.getElementById('sh-spread-v').textContent = spread+'px';
+  document.getElementById('sh-alpha-v').textContent = alpha+'%';
+  const r = parseInt(color.slice(1,3),16), g = parseInt(color.slice(3,5),16), b = parseInt(color.slice(5,7),16);
+  const rgba = `rgba(${r},${g},${b},${(alpha/100).toFixed(2)})`;
+  const shadow = `${inset?'inset ':''}${x}px ${y}px ${blur}px ${spread}px ${rgba}`;
+  document.getElementById('sh-preview').style.boxShadow = shadow;
+  const css = `box-shadow: ${shadow};`;
+  const el = document.getElementById('sh-code');
+  el._rawText = css;
+  el.innerHTML = `<button class="copy-btn" onclick="copyCss('sh-code')">COPY</button>${css}`;
+}
+
+// Text Shadow
+function updateTextShadow() {
+  const x = document.getElementById('ts-x').value;
+  const y = document.getElementById('ts-y').value;
+  const blur = document.getElementById('ts-blur').value;
+  const color = document.getElementById('ts-color').value;
+  const text = document.getElementById('ts-text').value;
+  const size = document.getElementById('ts-size').value;
+  document.getElementById('ts-x-v').textContent=x+'px';
+  document.getElementById('ts-y-v').textContent=y+'px';
+  document.getElementById('ts-blur-v').textContent=blur+'px';
+  document.getElementById('ts-size-v').textContent=size+'px';
+  const shadow = `${x}px ${y}px ${blur}px ${color}`;
+  const el = document.getElementById('ts-preview');
+  el.textContent = text;
+  el.style.textShadow = shadow;
+  el.style.fontSize = size+'px';
+  const css = `text-shadow: ${shadow};\nfont-size: ${size}px;`;
+  const out = document.getElementById('ts-code');
+  out._rawText = css;
+  out.innerHTML = `<button class="copy-btn" onclick="copyCss('ts-code')">COPY</button>${css}`;
+}
+
+// Border Radius
+function updateBorderRadius() {
+  const type = document.getElementById('br-type').value;
+  document.getElementById('br-single-ctrl').style.display = type==='blob'||type==='single' ? '' : 'none';
+  document.getElementById('br-individual-ctrl').style.display = type==='individual' ? '' : 'none';
+  const color = document.getElementById('br-color').value;
+  let radius, css;
+  if (type==='individual') {
+    const tl=document.getElementById('br-tl').value, tr=document.getElementById('br-tr').value;
+    const br=document.getElementById('br-br').value, bl=document.getElementById('br-bl').value;
+    document.getElementById('br-tl-v').textContent=tl+'px';
+    document.getElementById('br-tr-v').textContent=tr+'px';
+    document.getElementById('br-br-v').textContent=br+'px';
+    document.getElementById('br-bl-v').textContent=bl+'px';
+    radius = `${tl}px ${tr}px ${br}px ${bl}px`;
+  } else if (type==='blob') {
+    const n=()=>20+Math.floor(Math.random()*60);
+    radius = `${n()}% ${100-n()}% ${n()}% ${100-n()}% / ${n()}% ${n()}% ${100-n()}% ${100-n()}%`;
+  } else {
+    const v=document.getElementById('br-all').value;
+    document.getElementById('br-all-v').textContent=v+'px';
+    radius = v+'px';
+  }
+  const el = document.getElementById('br-preview');
+  el.style.borderRadius = radius;
+  el.style.background = color;
+  css = `border-radius: ${radius};\nbackground: ${color};`;
+  const out = document.getElementById('br-code');
+  out._rawText = css;
+  out.innerHTML = `<button class="copy-btn" onclick="copyCss('br-code')">COPY</button>${css}`;
+}
+
+// Glassmorphism
+function updateGlass() {
+  const opacity = document.getElementById('gl-opacity').value;
+  const blur = document.getElementById('gl-blur').value;
+  const sat = document.getElementById('gl-sat').value;
+  const border = document.getElementById('gl-border').value;
+  const radius = document.getElementById('gl-radius').value;
+  const color = document.getElementById('gl-color').value;
+  document.getElementById('gl-opacity-v').textContent=opacity+'%';
+  document.getElementById('gl-blur-v').textContent=blur+'px';
+  document.getElementById('gl-sat-v').textContent=sat+'%';
+  document.getElementById('gl-border-v').textContent=border+'px';
+  document.getElementById('gl-radius-v').textContent=radius+'px';
+  const r=parseInt(color.slice(1,3),16),g=parseInt(color.slice(3,5),16),b=parseInt(color.slice(5,7),16);
+  const el = document.getElementById('gl-preview');
+  el.style.background = `rgba(${r},${g},${b},${opacity/100})`;
+  el.style.backdropFilter = `blur(${blur}px) saturate(${sat}%)`;
+  el.style.webkitBackdropFilter = `blur(${blur}px) saturate(${sat}%)`;
+  el.style.border = `${border}px solid rgba(255,255,255,0.2)`;
+  el.style.borderRadius = radius+'px';
+  const css = `.glass {\n  background: rgba(${r},${g},${b},${opacity/100});\n  backdrop-filter: blur(${blur}px) saturate(${sat}%);\n  -webkit-backdrop-filter: blur(${blur}px) saturate(${sat}%);\n  border: ${border}px solid rgba(255,255,255,0.2);\n  border-radius: ${radius}px;\n}`;
+  const out = document.getElementById('gl-code');
+  out._rawText = css; out.innerHTML = `<button class="copy-btn" onclick="copyCss('gl-code')">COPY</button>${css}`;
+}
+
+// Neumorphism
+function updateNeum() {
+  const bg = document.getElementById('nm-bg').value;
+  const size = document.getElementById('nm-size').value;
+  const blur = document.getElementById('nm-blur').value;
+  const radius = document.getElementById('nm-radius').value;
+  const inset = document.getElementById('nm-inset').checked;
+  document.getElementById('nm-size-v').textContent=size+'px';
+  document.getElementById('nm-blur-v').textContent=blur+'px';
+  document.getElementById('nm-radius-v').textContent=radius+'px';
+  document.getElementById('nm-bg-wrap').style.background = bg;
+  const r=parseInt(bg.slice(1,3),16),g=parseInt(bg.slice(3,5),16),b=parseInt(bg.slice(5,7),16);
+  const darken=(v)=>Math.max(0,v-30);const lighten=(v)=>Math.min(255,v+30);
+  const dark=`rgb(${darken(r)},${darken(g)},${darken(b)})`;
+  const light=`rgb(${lighten(r)},${lighten(g)},${lighten(b)})`;
+  const pre = inset?'inset ':'';
+  const shadow = `${pre}${size}px ${size}px ${blur}px ${dark}, ${pre}-${size}px -${size}px ${blur}px ${light}`;
+  const el = document.getElementById('nm-preview');
+  el.style.background = bg;
+  el.style.boxShadow = shadow;
+  el.style.borderRadius = radius+'px';
+  el.style.color = darken(r)<100?'#fff':'#333';
+  const css = `.neumorphic {\n  background: ${bg};\n  box-shadow: ${shadow};\n  border-radius: ${radius}px;\n}`;
+  const out = document.getElementById('nm-code');
+  out._rawText=css; out.innerHTML=`<button class="copy-btn" onclick="copyCss('nm-code')">COPY</button>${css}`;
+}
+
+// Animation
+const animKeyframes = {
+  fadeIn:`@keyframes fadeIn {\n  from { opacity: 0; }\n  to   { opacity: 1; }\n}`,
+  slideUp:`@keyframes slideUp {\n  from { opacity: 0; transform: translateY(30px); }\n  to   { opacity: 1; transform: translateY(0); }\n}`,
+  bounce:`@keyframes bounce {\n  0%,100% { transform: translateY(0); animation-timing-function: cubic-bezier(.215,.61,.355,1); }\n  40%     { transform: translateY(-30px); animation-timing-function: cubic-bezier(.755,.05,.855,.06); }\n  70%     { transform: translateY(-15px); animation-timing-function: cubic-bezier(.755,.05,.855,.06); }\n  90%     { transform: translateY(-5px); }\n}`,
+  pulse:`@keyframes pulse {\n  0%,100% { transform: scale(1); }\n  50%     { transform: scale(1.1); }\n}`,
+  spin:`@keyframes spin {\n  from { transform: rotate(0deg); }\n  to   { transform: rotate(360deg); }\n}`,
+  shake:`@keyframes shake {\n  0%,100% { transform: translateX(0); }\n  20%,60% { transform: translateX(-10px); }\n  40%,80% { transform: translateX(10px); }\n}`,
+  flip:`@keyframes flip {\n  0%   { transform: perspective(400px) rotateY(0); }\n  50%  { transform: perspective(400px) rotateY(90deg); }\n  100% { transform: perspective(400px) rotateY(0); }\n}`,
+  rubber:`@keyframes rubber {\n  0%   { transform: scale(1,1); }\n  30%  { transform: scale(1.25,.75); }\n  40%  { transform: scale(.75,1.25); }\n  50%  { transform: scale(1.15,.85); }\n  65%  { transform: scale(.95,1.05); }\n  75%  { transform: scale(1.05,.95); }\n  100% { transform: scale(1,1); }\n}`,
+};
+function updateAnimation() {
+  const type = document.getElementById('anim-type').value;
+  const dur = document.getElementById('anim-dur').value;
+  const timing = document.getElementById('anim-timing').value;
+  const iter = document.getElementById('anim-iter').value;
+  document.getElementById('anim-dur-v').textContent = dur+'s';
+  const css = `.element {\n  animation: ${type} ${dur}s ${timing} ${iter};\n}\n\n${animKeyframes[type]}`;
+  const out = document.getElementById('anim-code');
+  out._rawText=css; out.innerHTML=`<button class="copy-btn" onclick="copyCss('anim-code')">COPY</button>${css}`;
+}
+function playAnimation() {
+  const type = document.getElementById('anim-type').value;
+  const dur = document.getElementById('anim-dur').value;
+  const timing = document.getElementById('anim-timing').value;
+  const iter = document.getElementById('anim-iter').value;
+  const el = document.getElementById('anim-preview');
+  // inject keyframes
+  document.getElementById('anim-keyframes').textContent = animKeyframes[type];
+  el.style.animation = 'none';
+  el.offsetHeight; // reflow
+  el.style.animation = `${type} ${dur}s ${timing} ${iter}`;
+}
+function stopAnimation() {
+  document.getElementById('anim-preview').style.animation = 'none';
+}
+
+// Filter
+function updateFilter() {
+  const blur = document.getElementById('fi-blur').value;
+  const bright = document.getElementById('fi-bright').value;
+  const contrast = document.getElementById('fi-contrast').value;
+  const sat = document.getElementById('fi-sat').value;
+  const hue = document.getElementById('fi-hue').value;
+  const sepia = document.getElementById('fi-sepia').value;
+  const gray = document.getElementById('fi-gray').value;
+  const invert = document.getElementById('fi-invert').value;
+  document.getElementById('fi-blur-v').textContent=blur+'px';
+  document.getElementById('fi-bright-v').textContent=bright+'%';
+  document.getElementById('fi-contrast-v').textContent=contrast+'%';
+  document.getElementById('fi-sat-v').textContent=sat+'%';
+  document.getElementById('fi-hue-v').textContent=hue+'deg';
+  document.getElementById('fi-sepia-v').textContent=sepia+'%';
+  document.getElementById('fi-gray-v').textContent=gray+'%';
+  document.getElementById('fi-invert-v').textContent=invert+'%';
+  const f = `blur(${blur}px) brightness(${bright}%) contrast(${contrast}%) saturate(${sat}%) hue-rotate(${hue}deg) sepia(${sepia}%) grayscale(${gray}%) invert(${invert}%)`;
+  document.getElementById('fi-preview').style.filter = f;
+  const parts = [];
+  if(blur!=0)parts.push(`blur(${blur}px)`);
+  if(bright!=100)parts.push(`brightness(${bright}%)`);
+  if(contrast!=100)parts.push(`contrast(${contrast}%)`);
+  if(sat!=100)parts.push(`saturate(${sat}%)`);
+  if(hue!=0)parts.push(`hue-rotate(${hue}deg)`);
+  if(sepia!=0)parts.push(`sepia(${sepia}%)`);
+  if(gray!=0)parts.push(`grayscale(${gray}%)`);
+  if(invert!=0)parts.push(`invert(${invert}%)`);
+  const css = `filter: ${parts.length ? parts.join('\n       ') : 'none'};`;
+  const out = document.getElementById('fi-code');
+  out._rawText=css; out.innerHTML=`<button class="copy-btn" onclick="copyCss('fi-code')">COPY</button>${css}`;
+}
+function resetFilters() {
+  ['fi-blur','fi-hue','fi-sepia','fi-gray','fi-invert'].forEach(id=>document.getElementById(id).value=0);
+  ['fi-bright','fi-contrast','fi-sat'].forEach(id=>document.getElementById(id).value=100);
+  updateFilter();
+}
+function copyCss(id) {
+  const el = document.getElementById(id);
+  const text = el._rawText || el.textContent.replace('COPY','').trim();
+  navigator.clipboard.writeText(text).then(()=>toast('CSS скопирован!'));
+}
+
+// ════════════════════════════ TEXT TOOLS ══════════════════════════════
+
+function analyzeText() {
+  const t=document.getElementById('text-input').value;
+  document.getElementById('stat-chars').textContent=t.length;
+  document.getElementById('stat-chars-ns').textContent=t.replace(/\s/g,'').length;
+  document.getElementById('stat-words').textContent=t.trim()?t.trim().split(/\s+/).length:0;
+  document.getElementById('stat-lines').textContent=t?t.split('\n').length:0;
+  document.getElementById('stat-sentences').textContent=(t.match(/[.!?]+/g)||[]).length;
+  document.getElementById('stat-read').textContent=Math.ceil((t.trim().split(/\s+/).length||0)/200);
+}
+function changeCase(type) {
+  const t=document.getElementById('case-input').value;
+  let r='';
+  if(type==='upper')r=t.toUpperCase();
+  else if(type==='lower')r=t.toLowerCase();
+  else if(type==='title')r=t.replace(/\w\S*/g,w=>w.charAt(0).toUpperCase()+w.substr(1).toLowerCase());
+  else if(type==='sentence')r=t.toLowerCase().replace(/(^\s*\w|[.!?]\s*\w)/g,c=>c.toUpperCase());
+  setOut('case-output',r);
+}
+function doReplace(isRegex) {
+  const t=document.getElementById('replace-input').value;
+  const f=document.getElementById('replace-find').value;
+  const w=document.getElementById('replace-with').value;
+  if(!f)return;
+  let r;
+  try{r=isRegex?t.replace(new RegExp(f,'g'),w):t.split(f).join(w);}
+  catch(e){r='❌ Ошибка: '+e.message;}
+  setOut('replace-output',r);
+}
+function reverseText(){const t=document.getElementById('misc-input').value;setOut('misc-output',t.split('').reverse().join(''));}
+function trimText(){const t=document.getElementById('misc-input').value;setOut('misc-output',t.split('\n').map(l=>l.trim()).join('\n').replace(/\n{3,}/g,'\n\n'));}
+function sortLines(){const t=document.getElementById('misc-input').value;setOut('misc-output',t.split('\n').filter(l=>l.trim()).sort().join('\n'));}
+function uniqueLines(){const t=document.getElementById('misc-input').value;setOut('misc-output',[...new Set(t.split('\n'))].join('\n'));}
+const TLT={'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'yo','ж':'zh','з':'z','и':'i','й':'j','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'kh','ц':'ts','ч':'ch','ш':'sh','щ':'sch','ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya'};
+function translit(s){return s.toLowerCase().split('').map(c=>TLT[c]!==undefined?TLT[c]:c).join('');}
+function makeSlug(){const t=document.getElementById('slug-input').value;const tr=translit(t);setOut('slug-output',tr.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''));setOut('translit-output',tr);}
+
+// ════════════════════════════ CONVERT ══════════════════════════════
+
+function jsonToCsv(){
+  try{const data=JSON.parse(document.getElementById('json-input').value);if(!Array.isArray(data))throw new Error('Ожидается массив');const keys=[...new Set(data.flatMap(Object.keys))];const e=v=>{const s=v==null?'':String(v);return(s.includes(',')||s.includes('"')||s.includes('\n'))?`"${s.replace(/"/g,'""')}"`:`s`;};const csv=[keys.join(','),...data.map(r=>keys.map(k=>r[k]??'').join(','))].join('\n');setOut('csv-output',csv);toast('Конвертация завершена!');}catch(e){setOut('csv-output','❌ '+e.message);}
+}
+function csvToJson(){
+  try{const lines=document.getElementById('csv-input').value.trim().split('\n');const headers=lines[0].split(',').map(h=>h.trim());const result=lines.slice(1).map(line=>{const vals=line.split(',');return Object.fromEntries(headers.map((h,i)=>[h,vals[i]?.trim()??'']));});const json=JSON.stringify(result,null,2);setOut('json-output',json);toast('Конвертация завершена!');}catch(e){setOut('json-output','❌ '+e.message);}
+}
+function mdToHtml(){
+  let md=document.getElementById('md-conv-input').value;
+  let html=md.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/^#{6}\s(.+)$/gm,'<h6>$1</h6>').replace(/^#{5}\s(.+)$/gm,'<h5>$1</h5>').replace(/^#{4}\s(.+)$/gm,'<h4>$1</h4>').replace(/^#{3}\s(.+)$/gm,'<h3>$1</h3>').replace(/^#{2}\s(.+)$/gm,'<h2>$1</h2>').replace(/^#{1}\s(.+)$/gm,'<h1>$1</h1>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/`(.+?)`/g,'<code>$1</code>').replace(/\[(.+?)\]\((.+?)\)/g,'<a href="$2">$1</a>').replace(/^[-*]\s(.+)$/gm,'<li>$1</li>').replace(/^---$/gm,'<hr>');
+  setOut('html-output',html);toast('MD → HTML готово!');
+}
+function fmtJson(n){try{setOut('json-fmt-output',JSON.stringify(JSON.parse(document.getElementById('json-fmt-input').value),null,n));toast('Форматировано!');}catch(e){setOut('json-fmt-output','❌ '+e.message);}}
+function minifyJson(){try{setOut('json-fmt-output',JSON.stringify(JSON.parse(document.getElementById('json-fmt-input').value)));toast('Минифицировано!');}catch(e){setOut('json-fmt-output','❌ '+e.message);}}
+
+async function uploadFile() {
+  const file = document.getElementById('file-upload').files[0];
+  if (!file) { toast('Выбери файл!'); return; }
+  const formData = new FormData();
+  formData.append('file', file);
+  setOut('file-upload-output', '⏳ Загрузка...');
+  const data = await apiFetch('/api/convert/file', { method:'POST', body: formData });
+  if (data.error) setOut('file-upload-output', '❌ ' + data.error);
+  else { setOut('file-upload-output', data.result); if(data.filename) toast('Конвертирован: ' + data.filename); }
+}
+
+// ════════════════════════════ DOWNLOAD CMDS ══════════════════════════════
+
+function genDlCmd(){
+  const url=document.getElementById('dl-url').value||'URL';
+  const q=document.getElementById('dl-quality').value;
+  const fmt=document.getElementById('dl-format').value;
+  const pl=document.getElementById('dl-playlist').checked;
+  let cmd='yt-dlp ';
+  if(q==='audio')cmd+='-x --audio-format mp3 --audio-quality 0 ';
+  else if(q==='audio-m4a')cmd+='-x --audio-format m4a --audio-quality 0 ';
+  else if(q==='best')cmd+=`-f "bestvideo[ext=${fmt}]+bestaudio/best" --merge-output-format ${fmt} `;
+  else cmd+=`-f "bestvideo[height<=${q}][ext=${fmt}]+bestaudio/best" --merge-output-format ${fmt} `;
+  if(!pl)cmd+='--no-playlist ';
+  cmd+=`"${url}"`;
+  document.getElementById('dl-cmd').innerHTML=`<span class="prompt">$ </span>${cmd}`;
+}
+function genSpot(){const url=document.getElementById('spot-url').value||'URL';const fmt=document.getElementById('spot-fmt').value;document.getElementById('spot-cmd').innerHTML=`<span class="prompt">$ </span>spotdl --format ${fmt} "${url}"`;}
+function genGal(){const url=document.getElementById('gal-url').value||'URL';const dir=document.getElementById('gal-dir').value||'./gallery';document.getElementById('gal-cmd').innerHTML=`<span class="prompt">$ </span>gallery-dl -d "${dir}" "${url}"`;}
+
+// ════════════════════════════ ENCODE ══════════════════════════════
+
+function b64enc(){try{setOut('b64-output',btoa(unescape(encodeURIComponent(document.getElementById('b64-input').value))));}catch(e){setOut('b64-output','❌ '+e.message);}}
+function b64dec(){try{setOut('b64-output',decodeURIComponent(escape(atob(document.getElementById('b64-input').value))));}catch(e){setOut('b64-output','❌ Некорректный Base64');}}
+function urlEnc(){setOut('url-output',encodeURIComponent(document.getElementById('url-input').value));}
+function urlDec(){try{setOut('url-output',decodeURIComponent(document.getElementById('url-input').value));}catch(e){setOut('url-output','❌ Ошибка');}}
+
+async function computeHashes() {
+  const text = document.getElementById('hash-input').value;
+  if (!text) { toast('Введи текст!'); return; }
+  ['hash-md5','hash-sha1','hash-sha256','hash-sha512'].forEach(id => setOut(id, '⏳ Вычисление...'));
+  const data = await apiFetch('/api/hash', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({text, algorithms:['md5','sha1','sha256','sha512']}) });
+  if (data.error) {
+    // Fallback: client-side (no md5)
+    const algos = ['SHA-1','SHA-256','SHA-512'];
+    const ids = ['hash-sha1','hash-sha256','hash-sha512'];
+    setOut('hash-md5','⚠️ MD5 только на сервере');
+    for (let i=0;i<algos.length;i++) {
+      const buf = await crypto.subtle.digest(algos[i], new TextEncoder().encode(text));
+      const hex = [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+      setOut(ids[i], algos[i]+': '+hex);
+    }
+  } else {
+    if(data.md5) setOut('hash-md5','MD5: '+data.md5);
+    if(data.sha1) setOut('hash-sha1','SHA-1: '+data.sha1);
+    if(data.sha256) setOut('hash-sha256','SHA-256: '+data.sha256);
+    if(data.sha512) setOut('hash-sha512','SHA-512: '+data.sha512);
+    if(data.sha3_256) setOut('hash-sha3','SHA3-256: '+data.sha3_256);
+    if(data.blake2b) setOut('hash-blake2','BLAKE2b: '+data.blake2b);
+  }
+}
+
+// ════════════════════════════ GENERATORS ══════════════════════════════
+
+function genPass(){
+  const len=parseInt(document.getElementById('pass-len').value);
+  const u=document.getElementById('pass-u').checked, l=document.getElementById('pass-l').checked;
+  const n=document.getElementById('pass-n').checked, s=document.getElementById('pass-s').checked;
+  let chars='';if(u)chars+='ABCDEFGHIJKLMNOPQRSTUVWXYZ';if(l)chars+='abcdefghijklmnopqrstuvwxyz';if(n)chars+='0123456789';if(s)chars+='!@#$%^&*()_+-=[]{}|;:,.<>?';if(!chars)chars='abcdefghijklmnopqrstuvwxyz';
+  const arr=new Uint8Array(len);crypto.getRandomValues(arr);
+  const pass=arr.reduce((a,v)=>a+chars[v%chars.length],'');
+  setOut('pass-output',pass);
+  let score=0;if(u)score++;if(l)score++;if(n)score++;if(s)score++;if(len>=20)score=Math.min(4,score+1);
+  document.getElementById('pass-strength').className='strength-bar s'+score;
+}
+function genMultiPass(n){const r=[];for(let i=0;i<n;i++){const len=parseInt(document.getElementById('pass-len').value);const u=document.getElementById('pass-u').checked,l=document.getElementById('pass-l').checked,nm=document.getElementById('pass-n').checked,s=document.getElementById('pass-s').checked;let chars='';if(u)chars+='ABCDEFGHIJKLMNOPQRSTUVWXYZ';if(l)chars+='abcdefghijklmnopqrstuvwxyz';if(nm)chars+='0123456789';if(s)chars+='!@#$%^&*()_+-=';if(!chars)chars='abcdefghijklmnopqrstuvwxyz';const arr=new Uint8Array(len);crypto.getRandomValues(arr);r.push(arr.reduce((a,v)=>a+chars[v%chars.length],''));}setOut('pass-output',r.join('\n'));}
+function genUUIDs(){const c=parseInt(document.getElementById('uuid-count').value)||5;const uuids=Array.from({length:c},()=>{const b=new Uint8Array(16);crypto.getRandomValues(b);b[6]=(b[6]&0x0f)|0x40;b[8]=(b[8]&0x3f)|0x80;const h=[...b].map(v=>v.toString(16).padStart(2,'0'));return`${h.slice(0,4).join('')}-${h.slice(4,6).join('')}-${h.slice(6,8).join('')}-${h.slice(8,10).join('')}-${h.slice(10).join('')}`;});setOut('uuid-output',uuids.join('\n'));}
+function genRandom(){const from=parseInt(document.getElementById('rand-from').value),to=parseInt(document.getElementById('rand-to').value),count=parseInt(document.getElementById('rand-count').value)||10,unique=document.getElementById('rand-unique').checked,sort=document.getElementById('rand-sort').checked,range=to-from+1;if(unique&&count>range){setOut('rand-output','❌ Нельзя получить '+count+' уникальных в диапазоне '+range);return;}let nums=[];if(unique){const pool=Array.from({length:range},(_,i)=>from+i);for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}nums=pool.slice(0,count);}else{nums=Array.from({length:count},()=>Math.floor(Math.random()*range)+from);}if(sort)nums.sort((a,b)=>a-b);setOut('rand-output',nums.join(', '));}
+const LW='lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat duis aute irure reprehenderit voluptate velit esse cillum eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt culpa qui officia deserunt mollit anim id est laborum'.split(' ');
+function genLorem(){const c=parseInt(document.getElementById('lorem-count').value)||3;const type=document.getElementById('lorem-type').value;const w=(n)=>Array.from({length:n},(_,i)=>LW[(i+Math.floor(Math.random()*5))%LW.length]).join(' ');let r='';if(type==='words')r=w(c);else if(type==='sentences')r=Array.from({length:c},()=>{const s=w(8+Math.floor(Math.random()*10));return s.charAt(0).toUpperCase()+s.slice(1)+'.';}).join(' ');else r=Array.from({length:c},()=>{const sC=4+Math.floor(Math.random()*4);return Array.from({length:sC},(_,i)=>{const s=w(8+Math.floor(Math.random()*10));return(i===0?s.charAt(0).toUpperCase()+s.slice(1):s)+'.';}).join(' ');}).join('\n\n');setOut('lorem-output',r);}
+
+// ════════════════════════════ COLOR ══════════════════════════════
+
+function hexToRgb(hex){const h=hex.replace('#','');return{r:parseInt(h.slice(0,2),16),g:parseInt(h.slice(2,4),16),b:parseInt(h.slice(4,6),16)};}
+function rgbToHex(r,g,b){return'#'+[r,g,b].map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join('');}
+function rgbToHsl(r,g,b){r/=255;g/=255;b/=255;const max=Math.max(r,g,b),min=Math.min(r,g,b);let h,s,l=(max+min)/2;if(max===min){h=s=0;}else{const d=max-min;s=l>0.5?d/(2-max-min):d/(max+min);switch(max){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;default:h=((r-g)/d+4)/6;}}return{h:Math.round(h*360),s:Math.round(s*100),l:Math.round(l*100)};}
+function hslToRgb(h,s,l){s/=100;l/=100;const c=(1-Math.abs(2*l-1))*s,x=c*(1-Math.abs((h/60)%2-1)),m=l-c/2;let r=0,g=0,b=0;if(h<60){r=c;g=x;}else if(h<120){r=x;g=c;}else if(h<180){g=c;b=x;}else if(h<240){g=x;b=c;}else if(h<300){r=x;b=c;}else{r=c;b=x;}return{r:Math.round((r+m)*255),g:Math.round((g+m)*255),b:Math.round((b+m)*255)};}
+function updateColorDisplays(r,g,b){const hex=rgbToHex(r,g,b);const hsl=rgbToHsl(r,g,b);document.getElementById('col-hex').value=hex;document.getElementById('col-picker').value=hex;document.getElementById('col-r').value=r;document.getElementById('col-g').value=g;document.getElementById('col-b').value=b;document.getElementById('col-h').value=hsl.h;document.getElementById('col-s').value=hsl.s;document.getElementById('col-l').value=hsl.l;document.getElementById('color-preview').style.background=hex;const css=`HEX:  ${hex}\nRGB:  rgb(${r}, ${g}, ${b})\nHSL:  hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)\nRGBA: rgba(${r}, ${g}, ${b}, 1)`;setOut('col-css',css);}
+function hexToAll(){const hex=document.getElementById('col-hex').value;if(!/^#[0-9a-fA-F]{6}$/.test(hex))return;const{r,g,b}=hexToRgb(hex);updateColorDisplays(r,g,b);}
+function pickerToAll(){const hex=document.getElementById('col-picker').value;document.getElementById('col-hex').value=hex;const{r,g,b}=hexToRgb(hex);updateColorDisplays(r,g,b);}
+function rgbToAll(){updateColorDisplays(parseInt(document.getElementById('col-r').value)||0,parseInt(document.getElementById('col-g').value)||0,parseInt(document.getElementById('col-b').value)||0);}
+function hslToAll(){const{r,g,b}=hslToRgb(parseInt(document.getElementById('col-h').value)||0,parseInt(document.getElementById('col-s').value)||0,parseInt(document.getElementById('col-l').value)||0);updateColorDisplays(r,g,b);}
+function genPalette(){const hex=document.getElementById('pal-hex').value;if(!/^#[0-9a-fA-F]{6}$/.test(hex))return;const{h,s,l}=rgbToHsl(...Object.values(hexToRgb(hex)));const type=document.getElementById('pal-type').value;let hues=[];if(type==='complementary')hues=[h,(h+180)%360];else if(type==='triadic')hues=[h,(h+120)%360,(h+240)%360];else if(type==='tetradic')hues=[h,(h+90)%360,(h+180)%360,(h+270)%360];else if(type==='analogous')hues=[h,(h+30)%360,(h+60)%360,(h-30+360)%360,(h-60+360)%360];else hues=[h,h,h,h,h];const lVals=type==='monochromatic'?[20,35,50,65,80]:[l,l,l,l,l];const colors=hues.map((hu,i)=>{const{r,g,b}=hslToRgb(hu,s,lVals[i]||l);return rgbToHex(r,g,b);});document.getElementById('palette-output').innerHTML=colors.map(c=>`<div style="text-align:center;cursor:pointer" onclick="navigator.clipboard.writeText('${c}');toast('${c}!')"><div style="width:65px;height:65px;background:${c};border-radius:8px;border:1px solid var(--border);margin-bottom:4px"></div><div style="font-size:10px;color:var(--muted)">${c}</div></div>`).join('');}
+
+// ════════════════════════════ QR ══════════════════════════════
+
+let qrInst = null;
+function genQR(text) {
+  const t=text||document.getElementById('qr-input').value;
+  if(!t.trim()){toast('Введи текст!');return;}
+  const size=parseInt(document.getElementById('qr-size').value);
+  const ecc=document.getElementById('qr-ecc').value;
+  const eccMap={L:QRCode.CorrectLevel.L,M:QRCode.CorrectLevel.M,Q:QRCode.CorrectLevel.Q,H:QRCode.CorrectLevel.H};
+  const out=document.getElementById('qr-output');out.innerHTML='';
+  try{new QRCode(out,{text:t,width:size,height:size,colorDark:'#000000',colorLight:'#ffffff',correctLevel:eccMap[ecc]});toast('QR создан!');}
+  catch(e){out.innerHTML='<span style="color:var(--danger)">Ошибка</span>';}
+}
+function dlQR(){const c=document.querySelector('#qr-output canvas');if(c){const a=document.createElement('a');a.href=c.toDataURL();a.download='qr.png';a.click();}else toast('Сначала создай QR');}
+function genWifi(){const ssid=document.getElementById('wifi-ssid').value,pass=document.getElementById('wifi-pass').value;const t=`WIFI:T:WPA;S:${ssid};P:${pass};;`;document.getElementById('qr-input').value=t;genQR(t);}
+function genPhoneQR(){const p=document.getElementById('qr-phone').value.replace(/\s/g,'');const t='tel:'+p;document.getElementById('qr-input').value=t;genQR(t);}
+function genSmsQR(){const p=document.getElementById('qr-phone').value.replace(/\s/g,'');const t='sms:'+p;document.getElementById('qr-input').value=t;genQR(t);}
+
+// ════════════════════════════ UNITS ══════════════════════════════
+
+function mkR(id,rows){document.getElementById(id).innerHTML=rows.map(([val,lbl])=>`<div class="unit-row"><span class="u-lbl">${lbl}</span><span class="u-val">${typeof val==='number'?(Math.abs(val)<0.001||Math.abs(val)>=1e9?val.toExponential(4):parseFloat(val.toFixed(6))):val}</span></div>`).join('');}
+function convLen(v){const m=parseFloat(v);mkR('len-r',[[m*1000,'мм'],[m*100,'см'],[m,'м'],[m/1000,'км'],[m*39.3701,'дюйм'],[m*3.28084,'фут'],[m*1.09361,'ярд'],[m/1609.34,'миля']]);}
+function convWei(v){const k=parseFloat(v);mkR('wei-r',[[k*1000,'г'],[k,'кг'],[k/1000,'т'],[k*35.274,'oz'],[k*2.20462,'lb'],[k*0.157473,'stone']]);}
+function convTemp(v,f){v=parseFloat(v);let c,fahr,k;if(f==='c'){c=v;fahr=v*9/5+32;k=v+273.15;}else if(f==='f'){c=(v-32)*5/9;fahr=v;k=c+273.15;}else{c=v-273.15;fahr=c*9/5+32;k=v;}document.getElementById('tc').value=parseFloat(c.toFixed(4));document.getElementById('tf').value=parseFloat(fahr.toFixed(4));document.getElementById('tk').value=parseFloat(k.toFixed(4));}
+function convSpd(v){const k=parseFloat(v);mkR('spd-r',[[k,'км/ч'],[k/3.6,'м/с'],[k*0.621371,'mph'],[k/1.852,'узел'],[k/1234.8,'Мах']]);}
+function convArea(v){const m=parseFloat(v);mkR('area-r',[[m,'м²'],[m/10000,'гектар'],[m/1e6,'км²'],[m*10.7639,'фут²'],[m/4046.86,'акр']]);}
+function convData(v){const b=parseFloat(v);mkR('data-r',[[b,'байт'],[b/1024,'КБ'],[b/1048576,'МБ'],[b/1073741824,'ГБ'],[b/1099511627776,'ТБ'],[b*8,'бит'],[b*8/1e6,'Мбит']]);}
+
+// ════════════════════════════ SNIPPETS ══════════════════════════════
+
+async function saveSnippet() {
+  const title=document.getElementById('snip-title').value;
+  const content=document.getElementById('snip-content').value;
+  const language=document.getElementById('snip-lang').value;
+  if(!content){toast('Введи содержимое!');return;}
+  const data = await apiFetch('/api/snippets',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title,content,language})});
+  if(data.error){toast('❌ '+data.error);return;}
+  toast('💾 Сохранено: '+data.title);
+  document.getElementById('snip-title').value='';
+  document.getElementById('snip-content').value='';
+  loadSnippets();
+}
+
+async function loadSnippets() {
+  const data = await apiFetch('/api/snippets');
+  const list = document.getElementById('snippets-list');
+  if (!Array.isArray(data)||data.error) { list.innerHTML='<div style="color:var(--muted);font-size:12px">⚠️ Сервер недоступен. Запусти: npm start</div>'; return; }
+  if (data.length===0) { list.innerHTML='<div style="color:var(--muted);font-size:12px">Нет сохранённых сниппетов</div>'; return; }
+  list.innerHTML = data.map(s=>`
+    <div class="snippet-item" onclick="viewSnippet('${s.id}')">
+      <div><div class="si-title">${s.title}</div><div class="si-meta">${s.language} · ${s.content.length} симв · ${new Date(s.createdAt).toLocaleString('ru')}</div></div>
+      <div class="si-actions" onclick="event.stopPropagation()">
+        <button class="si-btn" onclick="viewSnippet('${s.id}')">👁</button>
+        <button class="si-btn" onclick="loadToEditor('${s.id}')">✏️</button>
+        <button class="si-btn del" onclick="deleteSnippet('${s.id}')">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
+async function viewSnippet(id) {
+  const data = await apiFetch('/api/snippets/'+id);
+  if(data.error){toast('❌ '+data.error);return;}
+  document.getElementById('snip-view-title').textContent = data.title + ' ['+data.language+']';
+  setOut('snip-view-content', data.content);
+  document.getElementById('snip-view').style.display='block';
+  document.getElementById('snip-view').scrollIntoView({behavior:'smooth'});
+}
+async function loadToEditor(id) {
+  const data = await apiFetch('/api/snippets/'+id);
+  if(data.error){toast('❌ '+data.error);return;}
+  document.getElementById('snip-title').value = data.title;
+  document.getElementById('snip-content').value = data.content;
+  document.getElementById('snip-lang').value = data.language;
+  toast('Загружено в редактор');
+}
+async function deleteSnippet(id) {
+  if(!confirm('Удалить сниппет?')) return;
+  const data = await apiFetch('/api/snippets/'+id,{method:'DELETE'});
+  if(data.error){toast('❌ '+data.error);return;}
+  toast('Удалено'); loadSnippets();
+}
+function closeSnipView(){document.getElementById('snip-view').style.display='none';}
+
+// ════════════════════════════ INIT ══════════════════════════════
+
+window.onload = () => {
+  // init all generators
+  genPass();
+  hexToAll();
+  genPalette();
+  convLen(1); convWei(1); convSpd(100); convArea(100); convData(1073741824);
+  updateGradient();
+  updateShadow();
+  updateTextShadow();
+  updateBorderRadius();
+  updateGlass();
+  updateNeum();
+  updateAnimation();
+  updateFilter();
+  // load md sample
+  document.getElementById('md-input').value = MD_SAMPLE;
+  renderMd();
+  // load snippets
+  loadSnippets();
+};
+</script>
+</body>
+</html>

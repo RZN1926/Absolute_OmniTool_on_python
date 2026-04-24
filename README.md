@@ -1,4 +1,4 @@
-# 🧰 TOOLBOX — Python / FastAPI
+# 🧰 OmniTool — Python / FastAPI
 
 ## ⚡ Быстрый старт
 
